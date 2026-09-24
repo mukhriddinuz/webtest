@@ -1,0 +1,71 @@
+/*
+ * Design tokens. Components must never hardcode colors — they consume these
+ * variables through the Tailwind theme (see tailwind.config.js).
+ * Every color is stored as space-separated RGB channels so Tailwind can apply
+ * opacity modifiers (e.g. bg-primary/10).
+ */
+:root,
+[data-theme='light'] {
+  --bg-rgb: 250 248 244;
+  --surface-rgb: 255 255 255;
+  --surface-muted-rgb: 242 239 232;
+  --border-rgb: 230 225 214;
+  --text-rgb: 31 36 51;
+  --text-muted-rgb: 107 112 128;
+  --primary-rgb: 43 76 140;
+  --primary-hover-rgb: 34 61 114;
+  --primary-soft-rgb: 232 238 248;
+  --accent-rgb: 224 165 38;
+  --accent-soft-rgb: 251 241 218;
+  /* Ink placed on top of a primary / accent fill. */
+  --on-primary-rgb: 255 255 255;
+  --on-accent-rgb: 31 26 14;
+  --success-rgb: 47 143 91;
+  --success-soft-rgb: 227 243 234;
+  --danger-rgb: 196 71 58;
+  --danger-soft-rgb: 249 229 226;
+  --info-rgb: 62 124 177;
+
+  --shadow-card: 0 1px 2px rgb(31 36 51 / 0.04);
+  --shadow-raised: 0 4px 16px rgb(31 36 51 / 0.08);
+  --shadow-sheet: 0 -8px 32px rgb(31 36 51 / 0.12);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg-rgb: 26 28 34;
+  --surface-rgb: 35 38 46;
+  --surface-muted-rgb: 44 47 56;
+  --border-rgb: 53 57 69;
+  --text-rgb: 236 234 229;
+  --text-muted-rgb: 154 158 171;
+  --primary-rgb: 122 156 224;
+  --primary-hover-rgb: 146 175 232;
+  --primary-soft-rgb: 42 51 80;
+  --accent-rgb: 240 187 74;
+  --accent-soft-rgb: 61 51 32;
+  /* Dark theme fills are light, so their ink is dark. */
+  --on-primary-rgb: 15 20 32;
+  --on-accent-rgb: 31 26 14;
+  --success-rgb: 91 190 134;
+  --success-soft-rgb: 31 58 43;
+  --danger-rgb: 224 114 104;
+  --danger-soft-rgb: 64 36 31;
+  --info-rgb: 111 166 214;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.24);
+  --shadow-raised: 0 4px 16px rgb(0 0 0 / 0.32);
+  --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.4);
+  color-scheme: dark;
+}
+
+:root {
+  /* Browser default; ThemeProvider overrides these inside Telegram, where the
+     viewport insets come from the host rather than from env(). */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --viewport-height: 100dvh;
+  --bottom-bar-height: 0px;
+  /* 0px while the bottom navigation is hidden. */
+  --nav-height: 0px;
+}

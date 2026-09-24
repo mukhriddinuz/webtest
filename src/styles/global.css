@@ -1,0 +1,110 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans text-body antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif;
+  }
+
+  /* Aligned figures in body copy: Inter, tabular. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* JetBrains Mono is reserved for timers and test codes. */
+  .tnum-mono {
+    font-variant-numeric: tabular-nums;
+    @apply font-mono;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-border;
+  }
+}
+
+@layer components {
+  .page {
+    @apply mx-auto w-full max-w-content px-4;
+  }
+
+  .card {
+    @apply rounded-card border border-border bg-surface;
+    box-shadow: var(--shadow-card);
+  }
+
+  .hairline {
+    @apply border-b border-border;
+  }
+
+  /* Long formulas must scroll horizontally instead of breaking the layout. */
+  .math-scroll {
+    @apply max-w-full overflow-x-auto overflow-y-hidden;
+    scrollbar-width: none;
+  }
+  .math-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Horizontal rails scroll without ever showing a scrollbar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Bottom padding that clears the navbar (and its safe area). */
+  .pb-nav {
+    padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* KaTeX sizing tweaks so display formulas match our typography. */
+.katex {
+  font-size: 1.05em;
+}
+.katex-display {
+  @apply my-2;
+}
