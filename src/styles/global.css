@@ -23,7 +23,7 @@
   h1,
   h2,
   h3 {
-    @apply font-serif;
+    @apply font-sans;
   }
 
   /* Aligned figures in body copy: Inter, tabular. */
@@ -31,7 +31,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* JetBrains Mono is reserved for timers and test codes. */
+  /* Timers and test codes. */
   .tnum-mono {
     font-variant-numeric: tabular-nums;
     @apply font-mono;
@@ -55,13 +55,18 @@
     @apply mx-auto w-full max-w-content px-4;
   }
 
+  /* Telegram "section": a flat, borderless block on the grouped backdrop. */
   .card {
-    @apply rounded-card border border-border bg-surface;
-    box-shadow: var(--shadow-card);
+    @apply rounded-card bg-surface;
   }
 
   .hairline {
     @apply border-b border-border;
+  }
+
+  /* Telegram section header: small caps-like label above a group. */
+  .section-header {
+    @apply px-4 pb-1.5 text-[13px] font-medium uppercase tracking-wide text-text-muted;
   }
 
   /* Long formulas must scroll horizontally instead of breaking the layout. */

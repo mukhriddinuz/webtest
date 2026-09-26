@@ -90,7 +90,7 @@ export function DevPanelSheet() {
                     'rounded-control border p-3 text-left transition-colors duration-150',
                     user?.id === item.id
                       ? 'border-primary bg-primary-soft'
-                      : 'border-border bg-surface hover:border-primary/40',
+                      : 'border-border bg-surface active:bg-surface-muted',
                   )}
                 >
                   <span className="block text-body text-text">

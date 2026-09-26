@@ -44,6 +44,8 @@ export interface TelegramBridge {
   getStartParam(): string | null;
 
   getColorScheme(): ColorScheme;
+  /** Host palette (`bg_color`, `button_color`, …); null outside Telegram. */
+  getThemeParams(): Record<string, string> | null;
   onThemeChanged(handler: (scheme: ColorScheme) => void): Unsubscribe;
 
   getViewport(): Viewport;

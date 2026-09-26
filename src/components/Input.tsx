@@ -16,25 +16,25 @@ export function Field({ label, hint, error, required, className, children, htmlF
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label && (
-        <label htmlFor={htmlFor} className="text-small font-medium text-text">
+        <label htmlFor={htmlFor} className="px-1 text-small text-text-muted">
           {label}
           {required && <span className="ml-0.5 text-danger">*</span>}
         </label>
       )}
       {children}
       {error ? (
-        <p className="text-small text-danger">{error}</p>
+        <p className="px-1 text-small text-danger">{error}</p>
       ) : hint ? (
-        <p className="text-small text-text-muted">{hint}</p>
+        <p className="px-1 text-small text-text-muted">{hint}</p>
       ) : null}
     </div>
   );
 }
 
 export const inputClasses =
-  'h-11 w-full rounded-control border border-border bg-surface-muted px-3 text-body text-text ' +
-  'placeholder:text-text-muted/70 transition-colors duration-150 ' +
-  'focus:border-primary focus:bg-surface focus:outline-none disabled:opacity-50';
+  'h-11 w-full rounded-control border border-border bg-surface px-3 text-body text-text ' +
+  'placeholder:text-text-muted transition-colors duration-150 ' +
+  'focus:border-primary focus:outline-none disabled:opacity-50';
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> {
   label?: string;

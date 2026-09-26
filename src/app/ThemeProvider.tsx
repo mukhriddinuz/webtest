@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getMockBridge, getTelegram } from '@/lib/telegram';
+import { applyThemeParams, clearThemeParams } from '@/lib/telegram/themeParams';
 import { useUiStore } from '@/store/ui';
 
 /**
@@ -10,7 +11,7 @@ import { useUiStore } from '@/store/ui';
 function backgroundHex(): string {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--bg-rgb').trim();
   const channels = raw.split(/\s+/).map((value) => Number(value));
-  if (channels.length !== 3 || channels.some((value) => Number.isNaN(value))) return '#FAF8F4';
+  if (channels.length !== 3 || channels.some((value) => Number.isNaN(value))) return '#EFEFF4';
   return `#${channels.map((value) => value.toString(16).padStart(2, '0')).join('')}`.toUpperCase();
 }
 
@@ -35,6 +36,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     const apply = (scheme: 'light' | 'dark') => {
       document.documentElement.dataset.theme = scheme;
+      // Telegram's palette only describes its own scheme, so it is used when
+      // the app follows the host; a forced light/dark uses our static palette.
+      if (preference === 'system' && telegram.isTelegram) {
+        applyThemeParams(telegram.getThemeParams());
+      } else {
+        clearThemeParams();
+      }
       const background = backgroundHex();
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', background);
       if (telegram.isTelegram) telegram.setThemeColors(background);

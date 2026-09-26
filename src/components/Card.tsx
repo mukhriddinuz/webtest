@@ -12,7 +12,7 @@ export function Card({ padded = true, interactive, className, children, ...rest 
       className={cn(
         'card',
         padded && 'p-4',
-        interactive && 'cursor-pointer transition-colors duration-150 hover:border-primary/40',
+        interactive && 'cursor-pointer transition-colors duration-150 active:bg-surface-muted',
         className,
       )}
       {...rest}
@@ -28,4 +28,15 @@ export function CardTitle({ children, className }: { children: ReactNode; classN
 
 export function SectionTitle({ children, className }: { children: ReactNode; className?: string }) {
   return <h2 className={cn('text-section-title text-text', className)}>{children}</h2>;
+}
+
+/** Telegram-style caption above a grouped section. */
+export function SectionHeader({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <h2 className={cn('section-header', className)}>{children}</h2>;
 }

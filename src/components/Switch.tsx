@@ -33,16 +33,16 @@ export function Switch({ checked, onChange, label, hint, disabled, className }: 
         />
         <span
           className={cn(
-            'h-6 w-11 rounded-full border border-border bg-surface-muted transition-colors duration-150',
-            'peer-checked:border-primary peer-checked:bg-primary',
+            'h-[26px] w-[44px] rounded-full bg-text-muted/30 transition-colors duration-200',
+            'peer-checked:bg-primary',
             'peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-bg',
           )}
         />
         <span
           className={cn(
-            'pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-surface shadow-sm',
-            'transition-transform duration-150',
-            checked && 'translate-x-5',
+            'pointer-events-none absolute left-[2px] top-[2px] h-[22px] w-[22px] rounded-full bg-white',
+            'shadow-[0_1px_3px_rgb(0_0_0/0.25)] transition-transform duration-200',
+            checked && 'translate-x-[18px]',
           )}
         />
       </span>

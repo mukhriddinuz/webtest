@@ -51,7 +51,7 @@ export function ContentBlockEditor({
   return (
     <div className="flex flex-col gap-3">
       {blocks.map((block, index) => (
-        <div key={block.id} className="rounded-card border border-border bg-surface p-3">
+        <div key={block.id} className="rounded-card bg-surface-muted p-3">
           <div className="mb-2 flex items-center gap-1">
             <span className="text-small text-text-muted">
               {block.type === 'text'

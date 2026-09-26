@@ -82,7 +82,7 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        'z-30 -mx-4 mb-4 bg-bg/95 px-4 backdrop-blur',
+        'z-30 -mx-4 mb-3 bg-bg/90 px-4 backdrop-blur-[20px]',
         divider && 'border-b border-border',
         sticky && 'sticky top-0',
       )}
@@ -92,8 +92,12 @@ export function PageHeader({
         <DevPanelButton />
         {/* Inside Telegram the native BackButton already handles this. */}
         {handleBack && !telegram.isTelegram && (
-          <IconButton label="Back" onClick={handleBack} className="-ml-2">
-            <ChevronLeft size={22} strokeWidth={1.75} />
+          <IconButton
+            label="Back"
+            onClick={handleBack}
+            className="-ml-2 text-primary hover:text-primary"
+          >
+            <ChevronLeft size={26} strokeWidth={2} />
           </IconButton>
         )}
         <div className="min-w-0 flex-1">
