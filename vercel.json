@@ -3,12 +3,10 @@
   "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }],
   "headers": [
     {
-      "comment": "Asset file names carry a content hash, so they never go stale.",
       "source": "/assets/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
-      "comment": "The shell names those assets and must never be served from a cache: Telegram's webview keeps showing the previous release otherwise.",
       "source": "/((?!assets/).*)",
       "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
     }
