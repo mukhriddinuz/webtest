@@ -4,7 +4,12 @@ import { ApiError } from '../api';
 import type { Attempt, LiveSession, Question, Test, TestRegistration, User } from '../types';
 
 export const DB_KEY = 'testhub.db.v1';
-export const DB_VERSION = 2;
+/**
+ * Bumped whenever the seed material changes shape or content: a device holding
+ * an older database discards it and seeds again, which is also what refreshes
+ * the stored artwork.
+ */
+export const DB_VERSION = 3;
 
 export interface MockDatabase {
   version: number;
