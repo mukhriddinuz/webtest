@@ -66,7 +66,8 @@ export function applyThemeParams(
   const set = (token: string, rgb: Rgb) => root.style.setProperty(`--${token}-rgb`, channels(rgb));
   set('bg', backdrop);
   set('surface', surface);
-  set('surface-muted', mix(text, surface, 0.06));
+  // Must read as a fill on a white card and on the grey backdrop alike.
+  set('surface-muted', mix(text, surface, 0.1));
   set('border', separator);
   set('text', text);
   set('text-muted', hint);

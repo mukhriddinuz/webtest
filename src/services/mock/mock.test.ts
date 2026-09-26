@@ -235,3 +235,37 @@ describe('reset', () => {
     expect(await mockApi.tests.list()).toContainEqual(expect.objectContaining({ id: 't_algebra' }));
   });
 });
+
+describe('resolving a Telegram account', () => {
+  const visitor = { id: 777000111, firstName: 'Muxriddin', username: 'muxriddin' };
+
+  it('hands the first visitor the demo teacher, so the app is not empty', async () => {
+    const user = await mockApi.users.resolve(visitor);
+
+    expect(user.id).toBe('u_teacher_1');
+    expect(user.firstName).toBe('Muxriddin');
+    // The demo teacher's own name must not linger on the adopted account.
+    expect(user.lastName).toBeUndefined();
+    expect(user.username).toBe('muxriddin');
+
+    const stats = await mockApi.users.stats(user.id);
+    expect(stats.created).toBeGreaterThan(0);
+    expect(stats.taken).toBeGreaterThan(0);
+  });
+
+  it('returns the same account on a second visit', async () => {
+    const first = await mockApi.users.resolve(visitor);
+    const again = await mockApi.users.resolve({ ...visitor, firstName: 'Muhriddin' });
+
+    expect(again.id).toBe(first.id);
+    expect(again.firstName).toBe('Muhriddin');
+  });
+
+  it('creates a fresh account once the demo teacher is taken', async () => {
+    await mockApi.users.resolve(visitor);
+    const other = await mockApi.users.resolve({ id: 777000222, firstName: 'Sitora' });
+
+    expect(other.id).not.toBe('u_teacher_1');
+    expect((await mockApi.users.stats(other.id)).created).toBe(0);
+  });
+});

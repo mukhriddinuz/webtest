@@ -3,6 +3,15 @@ import { ApiError, type UsersApi, type UserStats } from '../api';
 import type { User } from '../types';
 import { db, mutate, requireUser, simulate } from './db';
 
+/**
+ * Until the backend lands there is nothing but the seed material, and it all
+ * belongs to the demo teacher. A visitor who arrives as a fresh account would
+ * therefore meet an empty app, so the first Telegram account to open it takes
+ * that teacher's place — its tests, attempts and statistics included. Each
+ * device seeds its own database, so every visitor gets this on their first run.
+ */
+const DEMO_TEACHER = { id: 'u_teacher_1', telegramId: 100000001 };
+
 export const mockUsersApi: UsersApi = {
   resolve: (telegramUser) =>
     simulate(() =>
@@ -15,6 +24,18 @@ export const mockUsersApi: UsersApi = {
           existing.photoUrl = telegramUser.photoUrl ?? existing.photoUrl;
           return existing;
         }
+
+        const demo = draft.users.find((user) => user.id === DEMO_TEACHER.id);
+        // Unclaimed while it still carries the telegram id from the seed.
+        if (demo && demo.telegramId === DEMO_TEACHER.telegramId) {
+          demo.telegramId = telegramUser.id;
+          demo.firstName = telegramUser.firstName;
+          demo.lastName = telegramUser.lastName;
+          demo.username = telegramUser.username;
+          demo.photoUrl = telegramUser.photoUrl;
+          return demo;
+        }
+
         const created: User = {
           id: uid('user'),
           telegramId: telegramUser.id,

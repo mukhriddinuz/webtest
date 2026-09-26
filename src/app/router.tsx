@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { RouteSuspense } from './AppLayout';
+import { RouteErrorBoundary } from './ErrorBoundary';
 import { RootLayout } from './RootLayout';
 
 /* Heavy screens (KaTeX, Recharts, SheetJS) are split into their own chunks. */
@@ -30,6 +31,8 @@ export interface RouteHandle {
 const routes: RouteObject[] = [
   {
     element: <RootLayout />,
+    // A screen that throws replaces the page, not the whole app.
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         element: <RouteSuspense />,

@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router-dom';
 import '@/i18n';
 import { ErrorState } from '@/components/StateViews';
 import { Skeleton } from '@/components/Skeleton';
+import { AppErrorBoundary } from './ErrorBoundary';
 import { ThemeProvider } from './ThemeProvider';
 import { createAppRouter } from './router';
 import { Page } from './AppLayout';
@@ -23,11 +24,13 @@ const queryClient = new QueryClient({
 
 export function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AppBoot />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <AppErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <AppBoot />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </AppErrorBoundary>
   );
 }
 
