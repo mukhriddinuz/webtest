@@ -108,7 +108,25 @@ export default function ProfilePage() {
           </Button>
         )}
       </section>
+
+      <BuildStamp />
     </Page>
+  );
+}
+
+/**
+ * Which build is running. Without it there is no way to tell a webview showing
+ * a cached release from a deploy that never happened.
+ */
+function BuildStamp() {
+  const built = new Date(__BUILD_TIME__);
+  const stamp = Number.isNaN(built.getTime())
+    ? ''
+    : built.toISOString().slice(0, 16).replace('T', ' ');
+  return (
+    <p className="mt-6 text-center text-small text-text-muted">
+      TestHub · {__BUILD_ID__} · {stamp}
+    </p>
   );
 }
 
