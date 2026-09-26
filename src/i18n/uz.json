@@ -519,5 +519,38 @@
     "emptyTitle": "Hali natijalar yo‘q",
     "emptyText": "Kod bilan qo'shiling yoki sizga yuborilgan havolani oching.",
     "emptyAction": "Kod bilan qo'shilish"
+  },
+  "date": {
+    "months": [
+      "yanvar",
+      "fevral",
+      "mart",
+      "aprel",
+      "may",
+      "iyun",
+      "iyul",
+      "avgust",
+      "sentabr",
+      "oktabr",
+      "noyabr",
+      "dekabr"
+    ],
+    "monthsShort": [
+      "yan",
+      "fev",
+      "mar",
+      "apr",
+      "may",
+      "iyn",
+      "iyl",
+      "avg",
+      "sen",
+      "okt",
+      "noy",
+      "dek"
+    ],
+    "full": "{{day}}-{{month}}, {{year}}",
+    "short": "{{day}}-{{month}}",
+    "dateTime": "{{date}}, {{time}}"
   }
 }

@@ -20,13 +20,13 @@ export function Stepper({ steps, current, onStepClick, maxReachable }: StepperPr
         const clickable = onStepClick && index <= reachable;
 
         return (
-          <div key={step} className="flex flex-1 items-center gap-1">
+          <div key={step} className="flex min-w-0 flex-1 items-center gap-1">
             <button
               type="button"
               disabled={!clickable}
               onClick={() => clickable && onStepClick(index)}
               className={cn(
-                'flex flex-1 flex-col items-start gap-1.5 py-1 text-left',
+                'flex w-full min-w-0 flex-col items-start gap-1.5 py-1 text-left',
                 clickable ? 'cursor-pointer' : 'cursor-default',
               )}
             >
@@ -38,12 +38,12 @@ export function Stepper({ steps, current, onStepClick, maxReachable }: StepperPr
               />
               <span
                 className={cn(
-                  'flex items-center gap-1 text-small transition-colors duration-200',
+                  'flex w-full min-w-0 items-center gap-1 text-small transition-colors duration-200',
                   active ? 'font-medium text-text' : 'text-text-muted',
                 )}
               >
-                {done && <Check size={12} strokeWidth={2.25} className="text-primary" />}
-                {step}
+                {done && <Check size={12} strokeWidth={2.25} className="shrink-0 text-primary" />}
+                <span className="truncate">{step}</span>
               </span>
             </button>
           </div>

@@ -13,7 +13,7 @@
   --bg-rgb: 239 239 244;
   /* section_bg_color / bg_color: cells and cards. */
   --surface-rgb: 255 255 255;
-  --surface-muted-rgb: 241 241 245;
+  --surface-muted-rgb: 228 228 235;
   /* section_separator_color */
   --border-rgb: 225 225 230;
   --text-rgb: 0 0 0;
@@ -45,7 +45,7 @@
 [data-theme='dark'] {
   --bg-rgb: 14 22 33;
   --surface-rgb: 23 33 43;
-  --surface-muted-rgb: 36 47 61;
+  --surface-muted-rgb: 39 51 66;
   --border-rgb: 40 52 66;
   --text-rgb: 245 245 245;
   --text-muted-rgb: 112 132 153;

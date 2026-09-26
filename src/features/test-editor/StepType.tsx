@@ -39,13 +39,13 @@ export function StepType({
           onClick={() => onSelect(type)}
           className={cn(
             'flex items-center gap-3 rounded-card border p-4 text-left transition-colors duration-150',
-            value === type ? 'border-primary bg-primary-soft' : 'border-border bg-surface',
-            disabled ? 'cursor-not-allowed opacity-60' : 'hover:border-primary/50',
+            value === type ? 'border-primary bg-primary-soft' : 'border-transparent bg-surface',
+            disabled ? 'cursor-not-allowed opacity-60' : 'active:bg-surface-muted',
           )}
         >
           <span
             className={cn(
-              'flex h-11 w-11 shrink-0 items-center justify-center rounded-card',
+              'flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px]',
               TONE[type],
             )}
           >

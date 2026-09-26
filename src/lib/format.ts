@@ -1,4 +1,5 @@
 /** Formatting helpers. All user visible words live in i18n, these return neutral shapes. */
+import i18n from '@/i18n';
 
 /** 125 -> "02:05", 3725 -> "1:02:05" */
 export function formatDuration(totalSeconds: number): string {
@@ -26,21 +27,39 @@ export function formatPercent(value: number, fractionDigits = 0): string {
   return `${value.toFixed(fractionDigits)}%`;
 }
 
+/**
+ * Dates are formatted from the i18n month names rather than by `Intl`.
+ * Chromium reports `uz-UZ` as supported but has no Uzbek month names, so it
+ * renders "2026 M09 15" — which is what a Telegram Android user would see.
+ */
+function months(locale: string, style: 'long' | 'short'): string[] {
+  const key = style === 'long' ? 'date.months' : 'date.monthsShort';
+  const value = i18n.getFixedT(locale)(key, { returnObjects: true });
+  return Array.isArray(value) ? (value as string[]) : [];
+}
+
+function formatTime(date: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export function formatDateTime(iso: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'uz-UZ', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(iso));
+  const date = new Date(iso);
+  const t = i18n.getFixedT(locale);
+  const day = t('date.short', {
+    day: date.getDate(),
+    month: months(locale, 'short')[date.getMonth()] ?? '',
+  });
+  return t('date.dateTime', { date: day, time: formatTime(date) });
 }
 
 export function formatDate(iso: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'uz-UZ', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(iso));
+  const date = new Date(iso);
+  return i18n.getFixedT(locale)('date.full', {
+    day: date.getDate(),
+    month: months(locale, 'long')[date.getMonth()] ?? '',
+    year: date.getFullYear(),
+  });
 }
 
 /** Initials for avatar fallbacks. */

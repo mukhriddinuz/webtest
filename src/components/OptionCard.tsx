@@ -21,7 +21,8 @@ export interface OptionCardProps {
 }
 
 const STATE_STYLES: Record<OptionState, string> = {
-  idle: 'border-transparent bg-surface active:bg-surface-muted',
+  // Options sit on a white card, so they need the hairline to read as rows.
+  idle: 'border-border bg-surface active:bg-surface-muted',
   selected: 'border-primary bg-primary-soft',
   correct: 'border-success bg-success-soft',
   wrong: 'border-danger bg-danger-soft',
