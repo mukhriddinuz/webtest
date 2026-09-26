@@ -53,23 +53,21 @@ export function BottomSheet({
         aria-label={title}
         className={cn(
           'relative z-10 flex w-full max-w-content animate-sheet-in flex-col',
-          'rounded-t-sheet border border-border bg-surface sm:rounded-sheet',
+          'rounded-t-sheet bg-surface sm:rounded-sheet',
           tall ? 'h-[92vh] sm:h-[85vh]' : 'max-h-[85vh]',
         )}
         style={{ boxShadow: 'var(--shadow-sheet)' }}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-          <span className="absolute left-1/2 top-1.5 h-1 w-10 -translate-x-1/2 rounded-full bg-border sm:hidden" />
-          <h2 className="text-card-title text-text">{title}</h2>
+        <div className="flex items-center justify-between gap-3 px-4 pb-2 pt-3">
+          <span className="absolute left-1/2 top-1.5 h-1 w-9 -translate-x-1/2 rounded-full bg-text-muted/30 sm:hidden" />
+          <h2 className="text-section-title text-text">{title}</h2>
           <IconButton label={closeLabel} onClick={onClose} className="-mr-2">
             <X size={18} strokeWidth={1.75} />
           </IconButton>
         </div>
         <div className="flex-1 overflow-y-auto px-4 py-4">{children}</div>
         {footer && (
-          <div className="flex gap-2 border-t border-border px-4 py-3 pb-[max(0.75rem,var(--safe-bottom))]">
-            {footer}
-          </div>
+          <div className="flex gap-2 px-4 py-3 pb-[max(0.75rem,var(--safe-bottom))]">{footer}</div>
         )}
       </div>
     </div>,

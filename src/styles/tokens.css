@@ -1,61 +1,70 @@
 /*
- * Design tokens. Components must never hardcode colors — they consume these
- * variables through the Tailwind theme (see tailwind.config.js).
- * Every color is stored as space-separated RGB channels so Tailwind can apply
- * opacity modifiers (e.g. bg-primary/10).
+ * Design tokens, aligned with Telegram's own palette. Components must never
+ * hardcode colors — they consume these variables through the Tailwind theme
+ * (see tailwind.config.js). Every color is stored as space-separated RGB
+ * channels so Tailwind can apply opacity modifiers (e.g. bg-primary/10).
+ *
+ * Inside Telegram, ThemeProvider overwrites these with the host's
+ * `themeParams`, so the app follows whatever theme the user picked there.
  */
 :root,
 [data-theme='light'] {
-  --bg-rgb: 250 248 244;
+  /* secondary_bg_color: the grouped-list backdrop. */
+  --bg-rgb: 239 239 244;
+  /* section_bg_color / bg_color: cells and cards. */
   --surface-rgb: 255 255 255;
-  --surface-muted-rgb: 242 239 232;
-  --border-rgb: 230 225 214;
-  --text-rgb: 31 36 51;
-  --text-muted-rgb: 107 112 128;
-  --primary-rgb: 43 76 140;
-  --primary-hover-rgb: 34 61 114;
-  --primary-soft-rgb: 232 238 248;
-  --accent-rgb: 224 165 38;
-  --accent-soft-rgb: 251 241 218;
+  --surface-muted-rgb: 241 241 245;
+  /* section_separator_color */
+  --border-rgb: 225 225 230;
+  --text-rgb: 0 0 0;
+  /* hint_color */
+  --text-muted-rgb: 112 117 121;
+  /* button_color / link_color */
+  --primary-rgb: 51 144 236;
+  --primary-hover-rgb: 40 128 214;
+  --primary-soft-rgb: 229 241 253;
+  --accent-rgb: 245 155 35;
+  --accent-soft-rgb: 254 243 226;
   /* Ink placed on top of a primary / accent fill. */
   --on-primary-rgb: 255 255 255;
-  --on-accent-rgb: 31 26 14;
-  --success-rgb: 47 143 91;
-  --success-soft-rgb: 227 243 234;
-  --danger-rgb: 196 71 58;
-  --danger-soft-rgb: 249 229 226;
-  --info-rgb: 62 124 177;
+  --on-accent-rgb: 255 255 255;
+  --success-rgb: 49 181 69;
+  --success-soft-rgb: 228 246 231;
+  /* destructive_text_color */
+  --danger-rgb: 229 57 53;
+  --danger-soft-rgb: 252 232 231;
+  --info-rgb: 51 144 236;
 
-  --shadow-card: 0 1px 2px rgb(31 36 51 / 0.04);
-  --shadow-raised: 0 4px 16px rgb(31 36 51 / 0.08);
-  --shadow-sheet: 0 -8px 32px rgb(31 36 51 / 0.12);
+  --shadow-card: none;
+  --shadow-raised: 0 2px 12px rgb(0 0 0 / 0.1);
+  --shadow-sheet: 0 -2px 16px rgb(0 0 0 / 0.08);
   color-scheme: light;
 }
 
+/* Telegram "Night" theme. */
 [data-theme='dark'] {
-  --bg-rgb: 26 28 34;
-  --surface-rgb: 35 38 46;
-  --surface-muted-rgb: 44 47 56;
-  --border-rgb: 53 57 69;
-  --text-rgb: 236 234 229;
-  --text-muted-rgb: 154 158 171;
-  --primary-rgb: 122 156 224;
-  --primary-hover-rgb: 146 175 232;
-  --primary-soft-rgb: 42 51 80;
-  --accent-rgb: 240 187 74;
-  --accent-soft-rgb: 61 51 32;
-  /* Dark theme fills are light, so their ink is dark. */
-  --on-primary-rgb: 15 20 32;
-  --on-accent-rgb: 31 26 14;
-  --success-rgb: 91 190 134;
-  --success-soft-rgb: 31 58 43;
-  --danger-rgb: 224 114 104;
-  --danger-soft-rgb: 64 36 31;
-  --info-rgb: 111 166 214;
+  --bg-rgb: 14 22 33;
+  --surface-rgb: 23 33 43;
+  --surface-muted-rgb: 36 47 61;
+  --border-rgb: 40 52 66;
+  --text-rgb: 245 245 245;
+  --text-muted-rgb: 112 132 153;
+  --primary-rgb: 82 136 193;
+  --primary-hover-rgb: 99 152 207;
+  --primary-soft-rgb: 32 50 70;
+  --accent-rgb: 238 166 72;
+  --accent-soft-rgb: 56 45 32;
+  --on-primary-rgb: 255 255 255;
+  --on-accent-rgb: 255 255 255;
+  --success-rgb: 79 190 99;
+  --success-soft-rgb: 29 54 41;
+  --danger-rgb: 236 57 66;
+  --danger-soft-rgb: 60 31 38;
+  --info-rgb: 106 179 243;
 
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.24);
-  --shadow-raised: 0 4px 16px rgb(0 0 0 / 0.32);
-  --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.4);
+  --shadow-card: none;
+  --shadow-raised: 0 2px 12px rgb(0 0 0 / 0.35);
+  --shadow-sheet: 0 -2px 16px rgb(0 0 0 / 0.35);
   color-scheme: dark;
 }
 

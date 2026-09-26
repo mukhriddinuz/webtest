@@ -62,6 +62,7 @@ export function createWebAppBridge(app: RawTelegramWebApp): TelegramBridge {
     getStartParam: () => app.initDataUnsafe.start_param ?? null,
 
     getColorScheme: () => app.colorScheme,
+    getThemeParams: () => app.themeParams ?? null,
     onThemeChanged: (handler) => themeEmitter.on(handler),
 
     getViewport: readViewport,

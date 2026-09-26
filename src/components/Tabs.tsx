@@ -23,10 +23,7 @@ export function Tabs<T extends string>({
 }: TabsProps<T>) {
   if (variant === 'underline') {
     return (
-      <div
-        className={cn('no-scrollbar flex gap-1 overflow-x-auto border-b border-border', className)}
-        role="tablist"
-      >
+      <div className={cn('no-scrollbar flex gap-1 overflow-x-auto', className)} role="tablist">
         {items.map((item) => (
           <button
             key={item.value}
@@ -35,8 +32,8 @@ export function Tabs<T extends string>({
             aria-selected={item.value === value}
             onClick={() => onChange(item.value)}
             className={cn(
-              'relative min-h-[44px] whitespace-nowrap px-3 text-body transition-colors duration-150',
-              item.value === value ? 'text-text' : 'text-text-muted hover:text-text',
+              'relative min-h-[44px] whitespace-nowrap px-3 text-body font-medium transition-colors duration-150',
+              item.value === value ? 'text-primary' : 'text-text-muted hover:text-text',
             )}
           >
             {item.label}
@@ -44,7 +41,7 @@ export function Tabs<T extends string>({
               <span className="ml-1 text-small text-text-muted">{item.count}</span>
             )}
             {item.value === value && (
-              <span className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-primary" />
+              <span className="absolute inset-x-2 bottom-0 h-[3px] rounded-t-full bg-primary" />
             )}
           </button>
         ))}
@@ -54,7 +51,7 @@ export function Tabs<T extends string>({
 
   return (
     <div
-      className={cn('flex gap-1 rounded-control bg-surface-muted p-1', className)}
+      className={cn('flex gap-0.5 rounded-control bg-text/[0.06] p-0.5', className)}
       role="tablist"
     >
       {items.map((item) => (
@@ -65,9 +62,9 @@ export function Tabs<T extends string>({
           aria-selected={item.value === value}
           onClick={() => onChange(item.value)}
           className={cn(
-            'flex-1 rounded-[9px] px-3 py-2 text-body transition-colors duration-150',
+            'flex-1 rounded-[8px] px-3 py-1.5 text-small font-medium transition-colors duration-150',
             item.value === value
-              ? 'bg-surface text-text shadow-sm'
+              ? 'bg-surface text-text shadow-[0_1px_3px_rgb(0_0_0/0.12)]'
               : 'text-text-muted hover:text-text',
           )}
         >

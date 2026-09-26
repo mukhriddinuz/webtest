@@ -155,7 +155,7 @@ export default function HomePage() {
   return (
     <Page>
       <PageHeader>
-        <h1 className="truncate font-serif text-[22px] font-semibold leading-tight text-text">
+        <h1 className="truncate text-page-title text-text">
           {t('home.greeting', { name: user?.firstName ?? '' })}
         </h1>
         <p className="truncate text-[14px] text-text-muted">{t('home.subtitle')}</p>
@@ -428,7 +428,7 @@ function QuickAction({
     <button
       type="button"
       onClick={onClick}
-      className="card flex items-center gap-2.5 p-3 text-left transition-colors duration-150 hover:border-primary/40"
+      className="card flex items-center gap-2.5 p-3 text-left transition-colors duration-150 active:bg-surface-muted"
     >
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
         {icon}
@@ -450,7 +450,7 @@ function Section({
   return (
     <section className="mt-5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="text-card-title text-text">{title}</h2>
+        <h2 className="section-header px-1 pb-0">{title}</h2>
         {action}
       </div>
       {children}

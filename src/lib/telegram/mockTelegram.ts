@@ -64,6 +64,7 @@ export function createMockBridge(defaultUser: TelegramUser | null): MockBridge {
     getStartParam: () => new URLSearchParams(window.location.search).get('tgWebAppStartParam'),
 
     getColorScheme: resolveScheme,
+    getThemeParams: () => null,
     onThemeChanged: (handler) => themeEmitter.on(handler),
 
     getViewport: readViewport,

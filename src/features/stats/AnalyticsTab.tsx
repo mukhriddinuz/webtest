@@ -206,7 +206,7 @@ function OptionBreakdown({
 
 function StatTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-card border border-border bg-surface px-3 py-2.5">
+    <div className="rounded-card bg-surface px-3 py-2.5">
       <p className="tnum text-[18px] font-semibold text-text">{value}</p>
       <p className="text-small leading-tight text-text-muted">{label}</p>
     </div>

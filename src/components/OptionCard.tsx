@@ -21,7 +21,7 @@ export interface OptionCardProps {
 }
 
 const STATE_STYLES: Record<OptionState, string> = {
-  idle: 'border-border bg-surface hover:border-primary/40',
+  idle: 'border-transparent bg-surface active:bg-surface-muted',
   selected: 'border-primary bg-primary-soft',
   correct: 'border-success bg-success-soft',
   wrong: 'border-danger bg-danger-soft',
@@ -29,7 +29,7 @@ const STATE_STYLES: Record<OptionState, string> = {
 };
 
 const MARKER_STYLES: Record<OptionState, string> = {
-  idle: 'border-border text-text-muted',
+  idle: 'border-text-muted/40 text-text-muted',
   selected: 'border-primary bg-primary text-on-primary',
   correct: 'border-success bg-success text-on-primary',
   wrong: 'border-danger bg-danger text-on-primary',

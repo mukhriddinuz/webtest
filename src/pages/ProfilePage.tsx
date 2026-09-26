@@ -9,7 +9,7 @@ import { usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page, PageHeader } from '@/app/AppLayout';
 import { Avatar } from '@/components/Avatar';
 import { Button } from '@/components/Button';
-import { Card, CardTitle } from '@/components/Card';
+import { SectionHeader } from '@/components/Card';
 import { Select } from '@/components/Select';
 import { Badge } from '@/components/Badge';
 
@@ -30,25 +30,26 @@ export default function ProfilePage() {
     <Page>
       <PageHeader title={t('profile.title')} />
 
-      <Card className="mb-4 flex items-center gap-3">
+      {/* Telegram-style profile header: centered avatar, name and handle. */}
+      <div className="mb-5 flex flex-col items-center text-center">
         <Avatar
           name={`${user.firstName} ${user.lastName ?? ''}`}
           photoUrl={user.photoUrl}
-          size={56}
+          size={88}
         />
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-card-title text-text">
-            {user.firstName} {user.lastName}
-          </p>
-          {user.username && <p className="truncate text-small text-text-muted">@{user.username}</p>}
-          <div className="mt-1.5">
-            <Badge tone={user.role === 'admin' ? 'danger' : 'primary'}>{t(roleKey)}</Badge>
-          </div>
+        <p className="mt-3 max-w-full truncate text-[22px] font-semibold leading-tight text-text">
+          {user.firstName} {user.lastName}
+        </p>
+        {user.username && (
+          <p className="max-w-full truncate text-body text-text-muted">@{user.username}</p>
+        )}
+        <div className="mt-2">
+          <Badge tone={user.role === 'admin' ? 'danger' : 'primary'}>{t(roleKey)}</Badge>
         </div>
-      </Card>
+      </div>
 
-      <section className="mb-4">
-        <CardTitle className="mb-2">{t('profile.stats')}</CardTitle>
+      <section className="mb-5">
+        <SectionHeader className="px-1">{t('profile.stats')}</SectionHeader>
         <div className="grid grid-cols-2 gap-2">
           <StatCard
             icon={<FileCheck2 size={18} strokeWidth={1.75} />}
@@ -74,7 +75,7 @@ export default function ProfilePage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <CardTitle>{t('profile.preferences')}</CardTitle>
+        <SectionHeader className="-mb-1.5 px-1">{t('profile.preferences')}</SectionHeader>
         <Select
           label={t('profile.language')}
           value={language}
@@ -121,8 +122,8 @@ function StatCard({
   value: string | number;
 }) {
   return (
-    <div className="rounded-card border border-border bg-surface p-3">
-      <span className="mb-1.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary">
+    <div className="rounded-card bg-surface p-3">
+      <span className="mb-1.5 inline-flex h-8 w-8 items-center justify-center rounded-[9px] bg-primary text-on-primary">
         {icon}
       </span>
       <p className="tnum text-[20px] font-semibold text-text">{value}</p>

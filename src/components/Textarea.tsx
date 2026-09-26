@@ -22,9 +22,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         id={textareaId}
         rows={rows}
         className={cn(
-          'w-full resize-y rounded-control border border-border bg-surface-muted px-3 py-2.5',
-          'text-body text-text placeholder:text-text-muted/70 transition-colors duration-150',
-          'focus:border-primary focus:bg-surface focus:outline-none disabled:opacity-50',
+          'w-full resize-y rounded-control border border-border bg-surface px-3 py-2.5',
+          'text-body text-text placeholder:text-text-muted transition-colors duration-150',
+          'focus:border-primary focus:outline-none disabled:opacity-50',
           error && 'border-danger',
           className,
         )}

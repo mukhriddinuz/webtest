@@ -229,7 +229,7 @@ function SummaryTile({
   label: string;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-card border border-border bg-surface py-3">
+    <div className="flex flex-col items-center rounded-card bg-surface py-3">
       <span className="text-text-muted">{icon}</span>
       <span className="tnum mt-1 text-[18px] font-semibold text-text">{value}</span>
       <span className="text-small text-text-muted">{label}</span>

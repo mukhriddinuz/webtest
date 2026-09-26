@@ -16,21 +16,23 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-primary text-on-primary hover:bg-primary-hover active:bg-primary-hover',
-  secondary: 'bg-surface-muted text-text border border-border hover:bg-border/60',
-  ghost: 'bg-transparent text-text-muted hover:bg-surface-muted hover:text-text',
-  danger: 'bg-danger text-on-primary hover:bg-danger/90',
-  accent: 'bg-accent text-on-accent hover:bg-accent/90',
+  // Telegram's filled MainButton look.
+  primary: 'bg-primary text-on-primary hover:bg-primary-hover active:opacity-90',
+  // Telegram's tonal "secondary" button: tinted fill, link-colored label.
+  secondary: 'bg-primary-soft text-primary hover:bg-primary/15 active:bg-primary/20',
+  ghost: 'bg-transparent text-primary hover:bg-primary-soft active:bg-primary/15',
+  danger: 'bg-danger text-on-primary hover:bg-danger/90 active:opacity-90',
+  accent: 'bg-accent text-on-accent hover:bg-accent/90 active:opacity-90',
 };
 
 /** Disabled buttons change color instead of fading, so they stay legible. */
-const DISABLED = 'bg-surface-muted text-text-muted border border-transparent cursor-not-allowed';
+const DISABLED = 'bg-surface-muted text-text-muted cursor-not-allowed';
 
 const SIZES: Record<ButtonSize, string> = {
   // Every interactive control keeps a 44px touch target.
   sm: 'h-9 px-3 text-small gap-1.5 rounded-control',
   md: 'h-11 px-4 text-body gap-2 rounded-control',
-  lg: 'h-12 px-5 text-body font-medium gap-2 rounded-control',
+  lg: 'h-12 px-5 text-body font-semibold gap-2 rounded-card',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -86,10 +88,10 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       aria-label={label}
       title={label}
       className={cn(
-        'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-control transition-colors duration-150',
+        'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-150',
         tone === 'danger'
           ? 'text-danger hover:bg-danger-soft'
-          : 'text-text-muted hover:bg-surface-muted hover:text-text',
+          : 'text-text-muted hover:bg-text/5 hover:text-text active:bg-text/10',
         'disabled:cursor-not-allowed disabled:text-border disabled:hover:bg-transparent',
         className,
       )}

@@ -48,7 +48,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t('nav.home')}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/85 backdrop-blur-[12px]"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/90 backdrop-blur-[20px]"
       style={{ height: `calc(${NAV_HEIGHT}px + var(--safe-bottom))` }}
     >
       <div className="mx-auto flex h-[64px] w-full max-w-content items-stretch px-2">
@@ -61,10 +61,9 @@ export function BottomNav() {
             type="button"
             onClick={create}
             aria-label={t('home.newTest')}
-            className="-mt-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-on-primary transition-colors duration-150 hover:bg-primary-hover"
-            style={{ boxShadow: 'var(--shadow-raised)' }}
+            className="mt-2 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-on-primary transition-colors duration-150 hover:bg-primary-hover active:opacity-90"
           >
-            <Plus size={24} strokeWidth={2} />
+            <Plus size={24} strokeWidth={2.25} />
           </button>
         </div>
 
@@ -85,13 +84,13 @@ function NavItemLink({ item, onPress }: { item: NavItem; onPress: () => void }) 
       to={item.to}
       end={item.to === '/'}
       onClick={onPress}
-      className="flex flex-1 flex-col items-center justify-center gap-0.5 pt-1.5"
+      className="flex flex-1 flex-col items-center justify-center gap-1"
     >
       {({ isActive }) => (
         <>
           <Icon
-            size={22}
-            strokeWidth={1.75}
+            size={24}
+            strokeWidth={isActive ? 2.1 : 1.75}
             className={cn(
               'transition-colors duration-150',
               isActive ? 'text-primary' : 'text-text-muted',
@@ -99,18 +98,12 @@ function NavItemLink({ item, onPress }: { item: NavItem; onPress: () => void }) 
           />
           <span
             className={cn(
-              'max-w-full truncate px-0.5 text-[11px] leading-none transition-colors duration-150',
-              isActive ? 'font-medium text-primary' : 'text-text-muted',
+              'max-w-full truncate px-0.5 text-[10px] font-medium leading-none transition-colors duration-150',
+              isActive ? 'text-primary' : 'text-text-muted',
             )}
           >
             {t(item.labelKey)}
           </span>
-          <span
-            className={cn(
-              'mt-0.5 h-1 w-1 rounded-full transition-colors duration-150',
-              isActive ? 'bg-primary' : 'bg-transparent',
-            )}
-          />
         </>
       )}
     </NavLink>

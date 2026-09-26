@@ -363,7 +363,7 @@ function OptionRow({
   const value = block && 'value' in block ? block.value : '';
 
   return (
-    <div className="rounded-card border border-border bg-surface p-2">
+    <div className="rounded-card bg-surface-muted p-2">
       <div className="flex items-center gap-2">
         <button
           type="button"

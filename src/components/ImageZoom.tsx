@@ -27,7 +27,7 @@ export function StoredImage({ imageId, alt = '', className, zoomable = true }: S
         loading="lazy"
         onClick={() => zoomable && setZoomed(true)}
         className={cn(
-          'max-h-72 w-full rounded-card border border-border bg-surface object-contain',
+          'max-h-72 w-full rounded-card bg-surface object-contain',
           zoomable && 'cursor-zoom-in',
           className,
         )}

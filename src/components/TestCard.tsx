@@ -47,12 +47,12 @@ export function TestCard({
       onClick={onClick}
       className={cn(
         'card flex w-full gap-3 p-3 text-left transition-colors duration-150',
-        onClick && 'hover:border-primary/40',
+        onClick && 'active:bg-surface-muted',
       )}
     >
       <span
         className={cn(
-          'flex shrink-0 items-center justify-center overflow-hidden rounded-card',
+          'flex shrink-0 items-center justify-center overflow-hidden rounded-full',
           compact ? 'h-11 w-11' : 'h-16 w-16',
           cover ? '' : 'bg-primary-soft text-primary',
         )}

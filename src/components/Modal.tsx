@@ -52,7 +52,7 @@ export function Modal({
         aria-label={title}
         className={cn(
           'relative z-10 max-h-[85vh] w-full max-w-md animate-slide-up overflow-y-auto',
-          'rounded-sheet border border-border bg-surface p-5',
+          'rounded-sheet bg-surface p-5',
           className,
         )}
       >
