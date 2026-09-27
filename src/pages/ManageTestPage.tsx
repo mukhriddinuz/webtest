@@ -163,7 +163,6 @@ export default function ManageTestPage() {
         {canFinish && (
           <ListRow
             icon={<Square size={15} strokeWidth={1.75} />}
-            iconClassName="bg-text-muted text-on-primary"
             title={t('manage.finish')}
             chevron={false}
             onClick={() => setConfirm('finish')}
@@ -172,7 +171,6 @@ export default function ManageTestPage() {
         {canArchive && (
           <ListRow
             icon={<Archive size={15} strokeWidth={1.75} />}
-            iconClassName="bg-text-muted text-on-primary"
             title={t('manage.archive')}
             chevron={false}
             onClick={() => changeStatus('archived')}
@@ -180,7 +178,6 @@ export default function ManageTestPage() {
         )}
         <ListRow
           icon={<Copy size={15} strokeWidth={1.75} />}
-          iconClassName="bg-accent text-on-accent"
           title={t('manage.duplicate')}
           chevron={false}
           disabled={duplicate.isPending}
@@ -195,7 +192,6 @@ export default function ManageTestPage() {
         {test.type === 'live' && test.status === 'active' && (
           <ListRow
             icon={<Radio size={15} strokeWidth={1.75} />}
-            iconClassName="bg-danger text-on-primary"
             title={t('manage.startLive')}
             chevron={false}
             disabled={startingLive}
@@ -204,7 +200,6 @@ export default function ManageTestPage() {
         )}
         <ListRow
           icon={<Trash2 size={15} strokeWidth={1.75} />}
-          iconClassName="bg-danger text-on-primary"
           title={t('manage.delete')}
           tone="danger"
           chevron={false}
@@ -295,7 +290,6 @@ export default function ManageTestPage() {
                         size={28}
                       />
                     }
-                    iconClassName="bg-transparent"
                     title={
                       <>
                         <span className="tnum text-text-muted">{index + 1}. </span>

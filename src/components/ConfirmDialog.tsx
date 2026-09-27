@@ -17,9 +17,9 @@ export interface ConfirmDialogProps {
 }
 
 /**
- * The alert Telegram puts up: a narrow card with centred text and two plain
- * text buttons under a hairline — not two filled buttons, which would read as
- * a form rather than as a question.
+ * Telegram's alert: the title and the text sit left, and the two plain text
+ * buttons sit together in the bottom right. The centred card split in half by
+ * a hairline is the iOS dialect.
  */
 export function ConfirmDialog({
   open,
@@ -60,16 +60,15 @@ export function ConfirmDialog({
         role="alertdialog"
         aria-modal="true"
         aria-label={title}
-        className="relative z-10 w-full max-w-[280px] animate-slide-up overflow-hidden rounded-sheet bg-surface"
+        className="relative z-10 w-full max-w-[320px] animate-slide-up overflow-hidden rounded-sheet bg-surface"
       >
-        <div className="px-5 pb-4 pt-5 text-center">
-          <h2 className="text-card-title font-semibold text-text">{title}</h2>
-          {description && <p className="mt-1.5 text-small text-text-muted">{description}</p>}
+        <div className="px-6 pb-3 pt-5">
+          <h2 className="text-section-title text-text">{title}</h2>
+          {description && <p className="mt-2 text-body text-text-muted">{description}</p>}
         </div>
 
-        <div className="flex border-t border-border">
+        <div className="flex justify-end gap-1 px-3 pb-3 pt-1">
           <AlertButton onClick={onCancel}>{cancelLabel ?? t('common.cancel')}</AlertButton>
-          <span className="w-px bg-border" aria-hidden="true" />
           <AlertButton onClick={onConfirm} tone={tone} loading={loading}>
             {confirmLabel ?? t('common.confirm')}
           </AlertButton>
@@ -97,9 +96,9 @@ function AlertButton({
       onClick={onClick}
       disabled={loading}
       className={cn(
-        'flex min-h-[48px] flex-1 items-center justify-center gap-2 px-3 text-body',
+        'flex min-h-[40px] items-center justify-center gap-2 rounded-control px-4 text-body font-medium',
         'transition-colors duration-150 active:bg-surface-muted disabled:opacity-60',
-        tone === 'danger' ? 'font-medium text-danger' : 'text-primary',
+        tone === 'danger' ? 'text-danger' : 'text-primary',
       )}
     >
       {loading && <Loader2 size={15} className="animate-spin" strokeWidth={2} />}

@@ -42,11 +42,11 @@ export function PickerSheet<T extends string>({
               onSelect(option.value);
               onClose();
             }}
-            className="flex w-full items-center gap-3 pl-4 text-left transition-colors duration-150 active:bg-surface-muted"
+            className="flex w-full items-center gap-4 pl-4 text-left transition-colors duration-150 active:bg-surface-muted"
           >
             <span
               className={cn(
-                'flex min-h-[48px] flex-1 items-center gap-3 py-2 pr-4',
+                'flex min-h-[52px] flex-1 items-center gap-3 py-2.5 pr-4',
                 index > 0 && 'border-t border-border',
               )}
             >

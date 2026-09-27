@@ -42,18 +42,20 @@ export function TestCard({
   const TypeIcon = TYPE_ICON[test.type];
 
   return (
+    // A feed row, not a card: Telegram lists run edge to edge and are told
+    // apart by a separator that starts where the text starts.
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'card flex w-full gap-3 p-3 text-left transition-colors duration-150',
+        'group/row flex w-full gap-3 bg-surface pl-4 text-left transition-colors duration-150',
         onClick && 'active:bg-surface-muted',
       )}
     >
       <span
         className={cn(
-          'flex shrink-0 items-center justify-center overflow-hidden rounded-full',
-          compact ? 'h-11 w-11' : 'h-16 w-16',
+          'mt-3 flex shrink-0 items-center justify-center self-start overflow-hidden rounded-full',
+          compact ? 'h-11 w-11' : 'h-14 w-14',
           cover ? '' : 'bg-primary-soft text-primary',
         )}
       >
@@ -64,7 +66,7 @@ export function TestCard({
         )}
       </span>
 
-      <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+      <span className="flex min-w-0 flex-1 flex-col gap-1.5 border-t border-border py-3 pr-4 group-first/row:border-t-0">
         {title === '' ? (
           <span className="text-card-title italic text-text-muted">{t('testCard.untitled')}</span>
         ) : (

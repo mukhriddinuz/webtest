@@ -146,7 +146,7 @@ export default function MyTestsPage() {
       ) : visible.length === 0 ? (
         <EmptyState title={t('myTests.nothingFound')} />
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="-mx-4 bg-surface">
           {visible.map((test) => (
             <TestCard
               key={test.id}

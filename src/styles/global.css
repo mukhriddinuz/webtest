@@ -64,9 +64,10 @@
     @apply border-b border-border;
   }
 
-  /* Telegram section header: small caps-like label above a group. */
+  /* Telegram's section header: accent-coloured, sentence case, sitting at the
+     top of the white block rather than in small caps above it. */
   .section-header {
-    @apply px-4 pb-1.5 text-[13px] font-medium uppercase tracking-wide text-text-muted;
+    @apply px-4 pb-1.5 pt-3 text-[14px] font-medium text-primary;
   }
 
   /* Long formulas must scroll horizontally instead of breaking the layout. */

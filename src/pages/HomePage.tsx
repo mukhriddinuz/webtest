@@ -200,7 +200,7 @@ export default function HomePage() {
 
       {toContinue.length > 0 && (
         <Section title={t('home.sectionContinue')}>
-          <div className="flex flex-col gap-2">
+          <div className="-mx-4 bg-surface">
             {toContinue.map((item) =>
               item.kind === 'attempt' ? (
                 <ContinueRow
@@ -253,7 +253,7 @@ export default function HomePage() {
 
       {live.length > 0 && (
         <Section title={t('home.sectionLive')}>
-          <div className="flex flex-col gap-2">
+          <div className="-mx-4 bg-surface">
             {live.map((session) => (
               <button
                 key={session.id}
@@ -296,7 +296,7 @@ export default function HomePage() {
             </button>
           }
         >
-          <div className="flex flex-col gap-2">
+          <div className="-mx-4 bg-surface">
             {recent.map((entry) => (
               <TestCard
                 key={entry.key}
@@ -474,7 +474,7 @@ function Section({
   return (
     <section className="mt-5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="section-header px-1 pb-0">{title}</h2>
+        <h2 className="section-header px-0 pb-0">{title}</h2>
         {action}
       </div>
       {children}

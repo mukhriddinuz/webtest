@@ -74,7 +74,7 @@ export default function ResultsPage() {
           onAction={() => navigate('/')}
         />
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="-mx-4 bg-surface">
           {rows.map((attempt) => {
             const test = testsById.get(attempt.testId);
             return (
@@ -82,26 +82,32 @@ export default function ResultsPage() {
                 key={attempt.id}
                 type="button"
                 onClick={() => navigate(`/t/${attempt.testId}/result/${attempt.id}`)}
-                className="card flex items-center gap-3 p-3 text-left"
+                className="group/row flex w-full items-center gap-3 pl-4 text-left transition-colors duration-150 active:bg-surface-muted"
               >
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-body text-text">{test?.title}</span>
-                  <span className="block text-small text-text-muted">
-                    {formatDate(attempt.finishedAt ?? attempt.startedAt, i18n.language)} ·{' '}
-                    <span className="tnum">
-                      {attempt.score} / {attempt.maxScore}
+                <span className="flex min-w-0 flex-1 items-center gap-3 border-t border-border py-3 pr-4 group-first/row:border-t-0">
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-body text-text">{test?.title}</span>
+                    <span className="truncate text-small text-text-muted">
+                      {formatDate(attempt.finishedAt ?? attempt.startedAt, i18n.language)} ·{' '}
+                      <span className="tnum">
+                        {attempt.score} / {attempt.maxScore}
+                      </span>
                     </span>
                   </span>
+                  <span
+                    className={cn(
+                      'tnum shrink-0 text-body font-medium',
+                      percentTone(attempt.percent),
+                    )}
+                  >
+                    {Math.round(attempt.percent)}%
+                  </span>
+                  <ChevronRight
+                    size={16}
+                    strokeWidth={1.75}
+                    className="shrink-0 text-text-muted/70"
+                  />
                 </span>
-                <span
-                  className={cn(
-                    'tnum shrink-0 text-body font-medium',
-                    percentTone(attempt.percent),
-                  )}
-                >
-                  {Math.round(attempt.percent)}%
-                </span>
-                <ChevronRight size={16} strokeWidth={1.75} className="shrink-0 text-text-muted" />
               </button>
             );
           })}

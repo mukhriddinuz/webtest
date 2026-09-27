@@ -65,7 +65,7 @@ export default function ProfilePage() {
       </div>
 
       <section className="mb-5">
-        <SectionHeader className="px-1">{t('profile.stats')}</SectionHeader>
+        <SectionHeader className="px-0">{t('profile.stats')}</SectionHeader>
         <div className="grid grid-cols-2 gap-2">
           <StatCard
             icon={<FileCheck2 size={18} strokeWidth={1.75} />}
@@ -99,7 +99,6 @@ export default function ProfilePage() {
         />
         <ListRow
           icon={<Palette size={16} strokeWidth={1.75} />}
-          iconClassName="bg-accent text-on-accent"
           title={t('profile.theme')}
           value={THEMES.find((item) => item.value === themePreference)?.label}
           onClick={() => setPicker('theme')}
@@ -108,7 +107,6 @@ export default function ProfilePage() {
         {user.role === 'admin' && (
           <ListRow
             icon={<ShieldCheck size={16} strokeWidth={1.75} />}
-            iconClassName="bg-danger text-on-primary"
             title={t('admin.title')}
             onClick={() => navigate('/admin')}
           />
@@ -167,9 +165,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-card bg-surface p-3">
-      <span className="mb-1.5 inline-flex h-8 w-8 items-center justify-center rounded-[9px] bg-primary text-on-primary">
-        {icon}
-      </span>
+      <span className="mb-1.5 inline-flex text-primary">{icon}</span>
       <p className="tnum text-[20px] font-semibold text-text">{value}</p>
       <p className="text-small text-text-muted">{label}</p>
     </div>

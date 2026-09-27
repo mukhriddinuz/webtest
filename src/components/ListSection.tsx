@@ -4,9 +4,10 @@ import { cn } from '@/lib/cn';
 import { SwitchControl } from './Switch';
 
 /**
- * The grouped list Telegram builds almost every screen from: a white section
- * on the grey backdrop, a small caption above it, a footnote below, and rows
- * whose separator starts where the text starts rather than at the edge.
+ * The list Telegram builds almost every screen from. It runs edge to edge with
+ * square corners — the inset rounded card is the iOS dialect, not the one most
+ * users see — and neighbouring sections are told apart by the strip of page
+ * background between them rather than by a border.
  */
 export interface ListSectionProps {
   /** Small caption above the group. */
@@ -19,18 +20,21 @@ export interface ListSectionProps {
 
 export function ListSection({ header, footer, className, children }: ListSectionProps) {
   return (
-    <section className={cn('mb-5', className)}>
-      {header && <h2 className="section-header">{header}</h2>}
-      <div className="overflow-hidden rounded-card bg-surface">{children}</div>
-      {footer && <p className="px-4 pt-1.5 text-small text-text-muted">{footer}</p>}
+    // Negative margins undo the page gutter so the block spans the screen.
+    <section className={cn('-mx-4 mb-2', className)}>
+      <div className="bg-surface">
+        {header && <h2 className="section-header">{header}</h2>}
+        {children}
+      </div>
+      {footer && <p className="px-4 py-2 text-small text-text-muted">{footer}</p>}
     </section>
   );
 }
 
 export interface ListRowProps {
-  /** Leading glyph, shown in a rounded tile the way Telegram sets its own. */
+  /** Leading glyph, drawn plain — Telegram tints the glyph, not a tile. */
   icon?: ReactNode;
-  /** Tint behind the icon tile; omit for a plain one. */
+  /** Overrides the glyph colour, e.g. for a destructive row. */
   iconClassName?: string;
   title: ReactNode;
   subtitle?: ReactNode;
@@ -70,8 +74,8 @@ function RowBody({
       {icon && (
         <span
           className={cn(
-            'flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px]',
-            iconClassName ?? 'bg-primary text-on-primary',
+            'flex h-6 w-6 shrink-0 items-center justify-center',
+            iconClassName ?? 'text-text-muted',
           )}
         >
           {icon}
@@ -80,7 +84,7 @@ function RowBody({
 
       <span
         className={cn(
-          'flex min-h-[48px] min-w-0 flex-1 items-center gap-3 py-2 pr-4',
+          'flex min-h-[52px] min-w-0 flex-1 items-center gap-3 py-2.5 pr-4',
           // Drawn by the row itself so it can start after the icon rather
           // than cutting across the whole section.
           'border-t border-border group-first/row:border-t-0',
@@ -122,7 +126,7 @@ export function ListToggleRow({
   return (
     <label
       className={cn(
-        'group/row flex w-full cursor-pointer items-center gap-3 pl-4 text-left',
+        'group/row flex w-full cursor-pointer items-center gap-4 pl-4 text-left',
         'transition-colors duration-150 active:bg-surface-muted',
         disabled && 'cursor-not-allowed opacity-50',
       )}
@@ -160,7 +164,7 @@ export function ListRow({
     <Wrapper
       {...(onClick ? { type: 'button' as const, onClick, disabled } : {})}
       className={cn(
-        'flex w-full items-center gap-3 pl-4 text-left',
+        'flex w-full items-center gap-4 pl-4 text-left',
         'group/row',
         onClick && !disabled && 'transition-colors duration-150 active:bg-surface-muted',
         disabled && 'opacity-50',

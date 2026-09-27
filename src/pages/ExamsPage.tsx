@@ -66,7 +66,6 @@ function ExamRow({ test, onClick }: { test: Test; onClick: () => void }) {
   return (
     <ListRow
       icon={<GraduationCap size={16} strokeWidth={1.75} />}
-      iconClassName="bg-success text-on-primary"
       title={test.title}
       subtitle={facts.join(' · ')}
       onClick={onClick}
