@@ -1,6 +1,15 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Award, BarChart3, FileCheck2, FilePlus2, ShieldCheck } from 'lucide-react';
+import {
+  Award,
+  BarChart3,
+  FileCheck2,
+  FilePlus2,
+  Languages,
+  Palette,
+  ShieldCheck,
+} from 'lucide-react';
 import { LANGUAGE_LABELS, SUPPORTED_LANGUAGES, type Language } from '@/i18n';
 import { useCurrentUser } from '@/store/session';
 import { useUiStore, type ThemePreference } from '@/store/ui';
@@ -8,9 +17,9 @@ import { useUserStats } from '@/hooks/queries';
 import { usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page, PageHeader } from '@/app/AppLayout';
 import { Avatar } from '@/components/Avatar';
-import { Button } from '@/components/Button';
 import { SectionHeader } from '@/components/Card';
-import { Select } from '@/components/Select';
+import { ListRow, ListSection } from '@/components/ListSection';
+import { PickerSheet } from '@/components/PickerSheet';
 import { Badge } from '@/components/Badge';
 
 export default function ProfilePage() {
@@ -19,6 +28,13 @@ export default function ProfilePage() {
   const user = useCurrentUser();
   const stats = useUserStats(user?.id);
   const { themePreference, setThemePreference, language, setLanguage } = useUiStore();
+  const [picker, setPicker] = useState<'language' | 'theme' | null>(null);
+
+  const THEMES: { value: ThemePreference; label: string }[] = [
+    { value: 'system', label: t('profile.themeSystem') },
+    { value: 'light', label: t('profile.themeLight') },
+    { value: 'dark', label: t('profile.themeDark') },
+  ];
 
   usePrimaryAction(null);
 
@@ -74,40 +90,50 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-3">
-        <SectionHeader className="-mb-1.5 px-1">{t('profile.preferences')}</SectionHeader>
-        <Select
-          label={t('profile.language')}
-          value={language}
-          onChange={(event) => setLanguage(event.target.value as Language)}
-          options={SUPPORTED_LANGUAGES.map((code) => ({
-            value: code,
-            label: LANGUAGE_LABELS[code],
-          }))}
+      <ListSection header={t('profile.preferences')}>
+        <ListRow
+          icon={<Languages size={16} strokeWidth={1.75} />}
+          title={t('profile.language')}
+          value={LANGUAGE_LABELS[language]}
+          onClick={() => setPicker('language')}
         />
-        <Select
-          label={t('profile.theme')}
-          value={themePreference}
-          onChange={(event) => setThemePreference(event.target.value as ThemePreference)}
-          options={[
-            { value: 'system', label: t('profile.themeSystem') },
-            { value: 'light', label: t('profile.themeLight') },
-            { value: 'dark', label: t('profile.themeDark') },
-          ]}
+        <ListRow
+          icon={<Palette size={16} strokeWidth={1.75} />}
+          iconClassName="bg-accent text-on-accent"
+          title={t('profile.theme')}
+          value={THEMES.find((item) => item.value === themePreference)?.label}
+          onClick={() => setPicker('theme')}
         />
-
         {/* The admin area has no other entry point. */}
         {user.role === 'admin' && (
-          <Button
-            variant="secondary"
-            fullWidth
+          <ListRow
             icon={<ShieldCheck size={16} strokeWidth={1.75} />}
+            iconClassName="bg-danger text-on-primary"
+            title={t('admin.title')}
             onClick={() => navigate('/admin')}
-          >
-            {t('admin.title')}
-          </Button>
+          />
         )}
-      </section>
+      </ListSection>
+
+      <PickerSheet
+        open={picker === 'language'}
+        title={t('profile.language')}
+        value={language}
+        options={SUPPORTED_LANGUAGES.map((code) => ({ value: code, label: LANGUAGE_LABELS[code] }))}
+        onSelect={(next) => setLanguage(next as Language)}
+        onClose={() => setPicker(null)}
+        closeLabel={t('common.close')}
+      />
+
+      <PickerSheet
+        open={picker === 'theme'}
+        title={t('profile.theme')}
+        value={themePreference}
+        options={THEMES}
+        onSelect={setThemePreference}
+        onClose={() => setPicker(null)}
+        closeLabel={t('common.close')}
+      />
 
       <BuildStamp />
     </Page>

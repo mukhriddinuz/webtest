@@ -15,7 +15,7 @@ import {
 import { api, ApiError } from '@/services';
 import { useCurrentUser } from '@/store/session';
 import { toast } from '@/store/toast';
-import { cn } from '@/lib/cn';
+import { ListRow, ListSection } from '@/components/ListSection';
 import {
   qk,
   useActiveAttempt,
@@ -385,30 +385,19 @@ export default function TestIntroPage() {
       {/* ----------------------------- exam blocks --------------------------- */}
 
       {test.settings.exam && questions.length > 0 && (
-        <section className="mt-4">
-          <CardTitle className="mb-2">{t('exam.sections')}</CardTitle>
-          <ul className="card flex flex-col">
-            {test.settings.exam.sections.map((section, index) => {
-              const count = questions.filter((q) => q.sectionId === section.id).length;
-              return (
-                <li
-                  key={section.id}
-                  className={cn('px-4 py-3', index > 0 && 'border-t border-border')}
-                >
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="min-w-0 truncate text-body text-text">{section.title}</span>
-                    <span className="tnum shrink-0 text-small text-text-muted">
-                      {t('exam.sectionPoints', { points: section.pointsPerQuestion })}
-                    </span>
-                  </div>
-                  <p className="text-small text-text-muted">
-                    {section.subject} · {t('exam.sectionQuestions', { count })}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+        <ListSection header={t('exam.sections')} footer={t('exam.sectionsHint')} className="mt-4">
+          {test.settings.exam.sections.map((section) => (
+            <ListRow
+              key={section.id}
+              title={section.title}
+              subtitle={`${section.subject} · ${t('exam.sectionQuestions', {
+                count: questions.filter((question) => question.sectionId === section.id).length,
+              })}`}
+              value={t('exam.sectionPoints', { points: section.pointsPerQuestion })}
+              chevron={false}
+            />
+          ))}
+        </ListSection>
       )}
 
       {/* ------------------------------- rules ------------------------------ */}

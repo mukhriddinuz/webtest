@@ -5,7 +5,7 @@ import { uid } from '@/lib/id';
 import { parseNumeric } from '@/lib/grading';
 import { Input } from '@/components/Input';
 import { Select } from '@/components/Select';
-import { Switch } from '@/components/Switch';
+import { ListSection, ListToggleRow } from '@/components/ListSection';
 import { Button, IconButton } from '@/components/Button';
 import { CardTitle } from '@/components/Card';
 
@@ -191,34 +191,33 @@ export function StepSettings({
         </Button>
       </section>
 
-      <section className="flex flex-col divide-y divide-border">
-        <Switch
+      <ListSection footer={t('settings.antiCheatHint')}>
+        <ListToggleRow
+          title={t('settings.shuffleQuestions')}
           checked={settings.shuffleQuestions}
           onChange={(shuffleQuestions) => patch({ shuffleQuestions })}
-          label={t('settings.shuffleQuestions')}
         />
-        <Switch
+        <ListToggleRow
+          title={t('settings.shuffleOptions')}
           checked={settings.shuffleOptions}
           onChange={(shuffleOptions) => patch({ shuffleOptions })}
-          label={t('settings.shuffleOptions')}
         />
-        <Switch
+        <ListToggleRow
+          title={t('settings.allowBack')}
           checked={settings.allowBack}
           onChange={(allowBack) => patch({ allowBack })}
-          label={t('settings.allowBack')}
         />
-        <Switch
+        <ListToggleRow
+          title={t('settings.showCorrectAnswers')}
           checked={settings.showCorrectAnswers}
           onChange={(showCorrectAnswers) => patch({ showCorrectAnswers })}
-          label={t('settings.showCorrectAnswers')}
         />
-        <Switch
+        <ListToggleRow
+          title={t('settings.antiCheat')}
           checked={settings.antiCheat}
           onChange={(antiCheat) => patch({ antiCheat })}
-          label={t('settings.antiCheat')}
-          hint={t('settings.antiCheatHint')}
         />
-      </section>
+      </ListSection>
 
       <Input
         label={t('settings.penalty')}
