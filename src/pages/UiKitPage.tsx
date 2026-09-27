@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Star } from 'lucide-react';
+import { Languages, Sparkles, Star } from 'lucide-react';
 import type { AnswerOption, Question } from '@/services/types';
 import { useUiStore } from '@/store/ui';
 import { toast } from '@/store/toast';
@@ -18,6 +18,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { FormulaInput } from '@/components/FormulaInput';
 import { Input } from '@/components/Input';
 import { Leaderboard } from '@/components/Leaderboard';
+import { ListRow, ListSection, ListToggleRow } from '@/components/ListSection';
 import { LiveAnswerChart } from '@/components/LiveAnswerChart';
 import { MathText } from '@/components/MathText';
 import { Modal } from '@/components/Modal';
@@ -62,6 +63,7 @@ const demoQuestion: Question = {
 export default function UiKitPage() {
   const { t } = useTranslation();
   const { themePreference, setThemePreference, resolvedTheme } = useUiStore();
+  const [listToggle, setListToggle] = useState(true);
   const [tab, setTab] = useState<'one' | 'two'>('one');
   const [checked, setChecked] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -136,6 +138,20 @@ export default function UiKitPage() {
             />
             <Switch checked={checked} onChange={setChecked} label="Switch" hint="Izoh matni" />
           </div>
+        </Section>
+
+        <Section title="Lists">
+          <ListSection header="Grouped list" footer="A footnote, as Telegram sets its hints.">
+            <ListRow
+              icon={<Languages size={16} strokeWidth={1.75} />}
+              title="Til"
+              value="O'zbekcha"
+              onClick={() => undefined}
+            />
+            <ListRow title="Ikonkasiz qator" subtitle="Izoh matni" value="Qiymat" />
+            <ListToggleRow title="Toggle qatori" checked={listToggle} onChange={setListToggle} />
+            <ListRow title="Xavfli amal" tone="danger" chevron={false} onClick={() => undefined} />
+          </ListSection>
         </Section>
 
         <Section title="Navigation">

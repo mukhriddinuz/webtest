@@ -31,6 +31,7 @@ import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Countdown } from '@/components/Countdown';
 import { EmptyIllustration } from '@/components/EmptyState';
+import { ListFeed } from '@/components/ListSection';
 import { LoadingState } from '@/components/StateViews';
 import { ProgressBar } from '@/components/ProgressBar';
 import { TestCard } from '@/components/TestCard';
@@ -200,7 +201,7 @@ export default function HomePage() {
 
       {toContinue.length > 0 && (
         <Section title={t('home.sectionContinue')}>
-          <div className="flex flex-col gap-2">
+          <ListFeed>
             {toContinue.map((item) =>
               item.kind === 'attempt' ? (
                 <ContinueRow
@@ -223,7 +224,7 @@ export default function HomePage() {
                 />
               ),
             )}
-          </div>
+          </ListFeed>
         </Section>
       )}
 
@@ -253,7 +254,7 @@ export default function HomePage() {
 
       {live.length > 0 && (
         <Section title={t('home.sectionLive')}>
-          <div className="flex flex-col gap-2">
+          <ListFeed>
             {live.map((session) => (
               <button
                 key={session.id}
@@ -278,7 +279,7 @@ export default function HomePage() {
                 </span>
               </button>
             ))}
-          </div>
+          </ListFeed>
         </Section>
       )}
 
@@ -296,7 +297,7 @@ export default function HomePage() {
             </button>
           }
         >
-          <div className="flex flex-col gap-2">
+          <ListFeed>
             {recent.map((entry) => (
               <TestCard
                 key={entry.key}
@@ -313,7 +314,7 @@ export default function HomePage() {
                 }
               />
             ))}
-          </div>
+          </ListFeed>
         </Section>
       )}
 
@@ -474,7 +475,7 @@ function Section({
   return (
     <section className="mt-5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="section-header px-1 pb-0">{title}</h2>
+        <h2 className="section-header px-0 pb-0">{title}</h2>
         {action}
       </div>
       {children}

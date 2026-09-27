@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getMockBridge, getTelegram } from '@/lib/telegram';
 import { applyThemeParams, clearThemeParams } from '@/lib/telegram/themeParams';
+import { getPlatform } from '@/lib/platform';
 import { useUiStore } from '@/store/ui';
 
 /**
@@ -29,6 +30,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (i18n.language !== language) void i18n.changeLanguage(language);
     document.documentElement.lang = language;
   }, [language, i18n]);
+
+  useEffect(() => {
+    document.documentElement.dataset.platform = getPlatform();
+  }, []);
 
   useEffect(() => {
     const telegram = getTelegram();

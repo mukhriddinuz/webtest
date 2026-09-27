@@ -133,6 +133,20 @@ host va ishtirokchi sifatida sinash mumkin:
 reyting to'liq ko'rinadi. Vaqtlar joriy vaqtga nisbatan hisoblanadi: bitta
 musobaqa 2 soatdan keyin boshlanadi, boshqasi hozir davom etmoqda.
 
+## Platformaga moslashish
+
+Telegram hamma telefonda bir xil ko'rinmaydi: iPhone'da guruhlangan ro'yxatlar
+chetdan ichkarida va burchaklari yumaloq, dialog markazda; Android va desktopda
+ro'yxatlar chetdan-chetga, dialog tugmalari o'ng pastda.
+
+Shuning uchun `lib/platform.ts` `WebApp.platform` ni o'qiydi va `<html>` ga
+`data-platform="ios" | "base"` qo'yadi. `ListSection`, `ListFeed` va
+`ConfirmDialog` shu qiymatga qarab shakl tanlaydi, `.section-header` esa CSS
+orqali. Brauzerda har doim `base` ishlaydi.
+
+Yangi ekran yozganda ro'yxatni qo'lda yasamang — `ListSection` / `ListFeed`
+ishlating, shunda ikkala platformada ham to'g'ri chiqadi.
+
 ## Imtihon rejimi (DTM va Milliy sertifikat)
 
 `exam` turidagi testlar bo'limlarga bo'linadi va natijani boshqacha hisoblaydi.

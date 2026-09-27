@@ -405,7 +405,8 @@
     "exportExcel": "Excel yuklab olish",
     "exportHint": "Barcha ishtirokchilar va ularning javoblari bitta faylda",
     "startLive": "Jonli sessiyani boshlash",
-    "noAnalytics": "Tahlil uchun ma'lumot yetarli emas"
+    "noAnalytics": "Tahlil uchun ma'lumot yetarli emas",
+    "exitsShort": "{{count}} marta chiqqan"
   },
   "live": {
     "lobby": "Kutish xonasi",
@@ -576,9 +577,11 @@
     "approximateHint": "Rasmiy natija savollarning qiyinligini hisobga oluvchi Rasch modeli boʻyicha chiqariladi. Bu yerdagi baho — taxminiy.",
     "sections": "Imtihon tuzilishi",
     "sectionQuestions": "{{count}} ta savol",
-    "sectionPoints": "har biri {{points}} ball",
+    "sectionPoints": "{{points}} ball",
     "position": "{{current}} / {{total}}",
     "homeTitle": "Imtihonga tayyorgarlik",
-    "homeText": "DTM blok test va Milliy sertifikat namunalari"
+    "homeText": "DTM blok test va Milliy sertifikat namunalari",
+    "questionCount": "{{count}} ta savol",
+    "sectionsHint": "Ball — har bir toʻgʻri javob uchun."
   }
 }

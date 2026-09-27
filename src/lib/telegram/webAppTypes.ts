@@ -14,6 +14,7 @@ export interface RawTelegramWebApp {
     start_param?: string;
   };
   version: string;
+  platform: string;
   colorScheme: 'light' | 'dark';
   themeParams: Record<string, string>;
   isExpanded: boolean;

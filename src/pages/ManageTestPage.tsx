@@ -19,6 +19,7 @@ import {
 import { usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page, PageHeader } from '@/app/AppLayout';
 import { Avatar } from '@/components/Avatar';
+import { ListRow, ListSection } from '@/components/ListSection';
 import { Button, IconButton } from '@/components/Button';
 import { Card, CardTitle } from '@/components/Card';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
@@ -148,73 +149,63 @@ export default function ManageTestPage() {
         </span>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
+      {/* Telegram sets actions as list rows rather than as a row of chips. */}
+      <ListSection>
         {canPublish && (
-          <Button
-            size="sm"
+          <ListRow
             icon={<Play size={15} strokeWidth={1.75} />}
+            title={t('manage.publish')}
+            tone="primary"
+            chevron={false}
             onClick={() => changeStatus('active')}
-          >
-            {t('manage.publish')}
-          </Button>
+          />
         )}
         {canFinish && (
-          <Button
-            size="sm"
-            variant="secondary"
+          <ListRow
             icon={<Square size={15} strokeWidth={1.75} />}
+            title={t('manage.finish')}
+            chevron={false}
             onClick={() => setConfirm('finish')}
-          >
-            {t('manage.finish')}
-          </Button>
+          />
         )}
         {canArchive && (
-          <Button
-            size="sm"
-            variant="secondary"
+          <ListRow
             icon={<Archive size={15} strokeWidth={1.75} />}
+            title={t('manage.archive')}
+            chevron={false}
             onClick={() => changeStatus('archived')}
-          >
-            {t('manage.archive')}
-          </Button>
+          />
         )}
-        <Button
-          size="sm"
-          variant="secondary"
+        <ListRow
           icon={<Copy size={15} strokeWidth={1.75} />}
-          loading={duplicate.isPending}
+          title={t('manage.duplicate')}
+          chevron={false}
+          disabled={duplicate.isPending}
           onClick={() =>
             user &&
             duplicate.mutate(
               { id: test.id, authorId: user.id },
-              {
-                onSuccess: (copyTest) => navigate(`/tests/${copyTest.id}/edit`),
-              },
+              { onSuccess: (copyTest) => navigate(`/tests/${copyTest.id}/edit`) },
             )
           }
-        >
-          {t('manage.duplicate')}
-        </Button>
+        />
         {test.type === 'live' && test.status === 'active' && (
-          <Button
-            size="sm"
-            variant="danger"
+          <ListRow
             icon={<Radio size={15} strokeWidth={1.75} />}
-            loading={startingLive}
+            title={t('manage.startLive')}
+            chevron={false}
+            disabled={startingLive}
             onClick={() => void startLive()}
-          >
-            {t('manage.startLive')}
-          </Button>
+          />
         )}
-        <Button
-          size="sm"
-          variant="ghost"
+        <ListRow
           icon={<Trash2 size={15} strokeWidth={1.75} />}
+          title={t('manage.delete')}
+          tone="danger"
+          chevron={false}
           onClick={() => setConfirm('delete')}
-        >
-          {t('manage.delete')}
-        </Button>
-      </div>
+        />
+      </ListSection>
 
       <Card className="mb-4">
         <CardTitle className="mb-2">{t('manage.link')}</CardTitle>
@@ -272,62 +263,46 @@ export default function ManageTestPage() {
               description={t('manage.noParticipantsText')}
             />
           ) : (
-            <div className="no-scrollbar overflow-x-auto">
-              <table className="w-full min-w-[420px] text-small">
-                <thead>
-                  <tr className="border-b border-border text-left text-text-muted">
-                    <th className="py-2 pr-2 font-medium">#</th>
-                    <th className="py-2 pr-2 font-medium">{t('manage.colName')}</th>
-                    <th className="py-2 pr-2 text-right font-medium">{t('manage.colScore')}</th>
-                    <th className="py-2 pr-2 text-right font-medium">{t('manage.colPercent')}</th>
-                    <th className="py-2 pr-2 text-right font-medium">{t('manage.colTime')}</th>
-                    <th className="py-2 text-right font-medium">{t('manage.colExits')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredParticipants.map((row, index) => {
-                    const timeSec = row.attempt.finishedAt
-                      ? Math.round(
-                          (new Date(row.attempt.finishedAt).getTime() -
-                            new Date(row.attempt.startedAt).getTime()) /
-                            1000,
-                        )
-                      : 0;
-                    return (
-                      <tr
-                        key={row.attempt.id}
-                        className="cursor-pointer border-b border-border last:border-0 hover:bg-surface-muted"
-                        onClick={() => navigate(`/t/${test.id}/result/${row.attempt.id}`)}
-                      >
-                        <td className="tnum py-2 pr-2 text-text-muted">{index + 1}</td>
-                        <td className="py-2 pr-2">
-                          <span className="flex items-center gap-2">
-                            <Avatar
-                              name={`${row.user.firstName} ${row.user.lastName ?? ''}`}
-                              photoUrl={row.user.photoUrl}
-                              size={26}
-                            />
-                            <span className="truncate text-text">
-                              {row.user.firstName} {row.user.lastName}
-                            </span>
-                          </span>
-                        </td>
-                        <td className="tnum py-2 pr-2 text-right text-text">{row.attempt.score}</td>
-                        <td className="tnum py-2 pr-2 text-right text-text-muted">
-                          {Math.round(row.attempt.percent)}%
-                        </td>
-                        <td className="tnum py-2 pr-2 text-right text-text-muted">
-                          {formatDuration(timeSec)}
-                        </td>
-                        <td className="tnum py-2 text-right text-text-muted">
-                          {row.attempt.tabSwitches}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <ListSection className="mb-0">
+              {filteredParticipants.map((row, index) => {
+                const timeSec = row.attempt.finishedAt
+                  ? Math.round(
+                      (new Date(row.attempt.finishedAt).getTime() -
+                        new Date(row.attempt.startedAt).getTime()) /
+                        1000,
+                    )
+                  : 0;
+                const facts = [
+                  `${Math.round(row.attempt.percent)}%`,
+                  formatDuration(timeSec),
+                  row.attempt.tabSwitches > 0
+                    ? t('manage.exitsShort', { count: row.attempt.tabSwitches })
+                    : null,
+                ].filter(Boolean);
+
+                return (
+                  <ListRow
+                    key={row.attempt.id}
+                    icon={
+                      <Avatar
+                        name={`${row.user.firstName} ${row.user.lastName ?? ''}`}
+                        photoUrl={row.user.photoUrl}
+                        size={28}
+                      />
+                    }
+                    title={
+                      <>
+                        <span className="tnum text-text-muted">{index + 1}. </span>
+                        {row.user.firstName} {row.user.lastName}
+                      </>
+                    }
+                    subtitle={facts.join(' · ')}
+                    value={<span className="tnum text-text">{row.attempt.score}</span>}
+                    onClick={() => navigate(`/t/${test.id}/result/${row.attempt.id}`)}
+                  />
+                );
+              })}
+            </ListSection>
           )}
         </section>
       )}

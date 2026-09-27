@@ -29,10 +29,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           ref={ref}
           id={selectId}
           className={cn(
-            'h-11 w-full appearance-none rounded-control border border-border bg-surface pl-3 pr-9',
-            'text-body text-text transition-colors duration-150',
-            'focus:border-primary focus:outline-none disabled:opacity-50',
-            error && 'border-danger',
+            'h-12 w-full appearance-none rounded-card bg-surface-muted pl-4 pr-10',
+            'text-body text-text transition-shadow duration-150',
+            'focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50',
+            error && 'ring-2 ring-danger',
             className,
           )}
           {...rest}
@@ -46,7 +46,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         <ChevronDown
           size={16}
           strokeWidth={1.75}
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
+          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted"
         />
       </div>
     </Field>
