@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   ChevronRight,
   FileSpreadsheet,
+  GraduationCap,
   KeyRound,
   PlayCircle,
   Plus,
@@ -176,6 +177,8 @@ export default function HomePage() {
           </div>
         </Card>
       )}
+
+      <ExamsEntry onClick={() => navigate('/exams')} />
 
       {loading && <LoadingState count={2} />}
 
@@ -434,6 +437,27 @@ function QuickAction({
         {icon}
       </span>
       <span className="min-w-0 text-small font-medium text-text">{label}</span>
+    </button>
+  );
+}
+
+/** The one way into the exam catalogue; the tab bar is already full. */
+function ExamsEntry({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="card mt-3 flex w-full items-center gap-3 p-3 text-left transition-colors duration-150 active:bg-surface-muted"
+    >
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-success-soft text-success">
+        <GraduationCap size={20} strokeWidth={1.75} />
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="truncate text-card-title text-text">{t('exam.homeTitle')}</span>
+        <span className="truncate text-small text-text-muted">{t('exam.homeText')}</span>
+      </span>
+      <ChevronRight size={18} strokeWidth={1.75} className="shrink-0 text-text-muted" />
     </button>
   );
 }

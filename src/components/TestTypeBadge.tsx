@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { FileText, Radio, Trophy, Users } from 'lucide-react';
+import { FileText, GraduationCap, Radio, Trophy, Users } from 'lucide-react';
 import type { TestStatus, TestType } from '@/services/types';
 import { cn } from '@/lib/cn';
 import { Badge, type BadgeTone } from './Badge';
@@ -9,6 +9,7 @@ export const TYPE_ICON = {
   contest: Trophy,
   limited: Users,
   live: Radio,
+  exam: GraduationCap,
 } as const;
 
 /** Only the glyph carries the type color; the chip itself stays neutral. */
@@ -17,6 +18,7 @@ const TYPE_ICON_COLOR: Record<TestType, string> = {
   contest: 'text-accent',
   limited: 'text-info',
   live: 'text-danger',
+  exam: 'text-success',
 };
 
 export function TestTypeBadge({ type }: { type: TestType }) {

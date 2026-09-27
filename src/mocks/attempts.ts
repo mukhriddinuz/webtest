@@ -78,6 +78,8 @@ export function generateAttempts(input: {
   test: Test;
   questions: Question[];
   pool: User[];
+  /** Accounts that must be among the participants, whatever the shuffle does. */
+  always?: User[];
   count: number;
   now: number;
   /** Spread of start times, in days before `now`. */
@@ -90,7 +92,15 @@ export function generateAttempts(input: {
   const meanAbility = input.meanAbility ?? 0.62;
   const grading = gradingOptionsFromSettings(test.settings);
 
-  const chosen = shuffle(pool, rnd).slice(0, Math.min(count, pool.length));
+  // The named accounts come first; the shuffle only fills the rest, so a demo
+  // account asked for here really does end up with an attempt.
+  const always = input.always ?? [];
+  const alwaysIds = new Set(always.map((user) => user.id));
+  const rest = shuffle(
+    pool.filter((user) => !alwaysIds.has(user.id)),
+    rnd,
+  );
+  const chosen = [...always, ...rest].slice(0, Math.min(count, always.length + rest.length));
   const attempts: Attempt[] = [];
 
   for (const user of chosen) {

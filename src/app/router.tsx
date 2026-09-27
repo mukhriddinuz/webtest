@@ -17,6 +17,7 @@ const ManageTestPage = lazy(() => import('@/pages/ManageTestPage'));
 const LiveHostPage = lazy(() => import('@/pages/LiveHostPage'));
 const LivePlayerPage = lazy(() => import('@/pages/LivePlayerPage'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
+const ExamsPage = lazy(() => import('@/pages/ExamsPage'));
 const AdminPage = lazy(() => import('@/pages/AdminPage'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 const UiKitPage = lazy(() => import('@/pages/UiKitPage'));
@@ -41,6 +42,7 @@ const routes: RouteObject[] = [
           { path: '/my-tests', element: <MyTestsPage /> },
           { path: '/results', element: <ResultsPage /> },
           { path: '/profile', element: <ProfilePage /> },
+          { path: '/exams', element: <ExamsPage /> },
           { path: '/admin', element: <AdminPage /> },
 
           { path: '/tests/new', element: <TestEditorPage />, handle: hideNav },

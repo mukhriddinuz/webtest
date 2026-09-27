@@ -15,9 +15,11 @@ import {
 import { api, ApiError } from '@/services';
 import { useCurrentUser } from '@/store/session';
 import { toast } from '@/store/toast';
+import { cn } from '@/lib/cn';
 import {
   qk,
   useActiveAttempt,
+  useQuestions,
   useLeaderboard,
   useRegistration,
   useSeatsLeft,
@@ -47,6 +49,9 @@ export default function TestIntroPage() {
 
   const testQuery = useTest(testId);
   const test = testQuery.data;
+  // Only an exam needs its questions here, to count them block by block.
+  const questionsQuery = useQuestions(test?.settings.exam ? testId : undefined);
+  const questions = questionsQuery.data ?? [];
   const author = useUser(test?.authorId);
   const cover = useImageSrc(test?.coverImageId);
   const activeAttempt = useActiveAttempt(testId, user?.id);
@@ -375,6 +380,35 @@ export default function TestIntroPage() {
           <p className="text-body text-text-muted">{t('live.joinTitle')}</p>
           <p className="mt-1 text-small text-text-muted">{t('home.joinTitle')}</p>
         </Card>
+      )}
+
+      {/* ----------------------------- exam blocks --------------------------- */}
+
+      {test.settings.exam && questions.length > 0 && (
+        <section className="mt-4">
+          <CardTitle className="mb-2">{t('exam.sections')}</CardTitle>
+          <ul className="card flex flex-col">
+            {test.settings.exam.sections.map((section, index) => {
+              const count = questions.filter((q) => q.sectionId === section.id).length;
+              return (
+                <li
+                  key={section.id}
+                  className={cn('px-4 py-3', index > 0 && 'border-t border-border')}
+                >
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="min-w-0 truncate text-body text-text">{section.title}</span>
+                    <span className="tnum shrink-0 text-small text-text-muted">
+                      {t('exam.sectionPoints', { points: section.pointsPerQuestion })}
+                    </span>
+                  </div>
+                  <p className="text-small text-text-muted">
+                    {section.subject} · {t('exam.sectionQuestions', { count })}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
       )}
 
       {/* ------------------------------- rules ------------------------------ */}

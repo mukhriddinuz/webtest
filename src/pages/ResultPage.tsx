@@ -13,6 +13,7 @@ import { CircularProgress } from '@/components/CircularProgress';
 import { ContentBlocks } from '@/components/ContentBlocks';
 import { ErrorState, LoadingState } from '@/components/StateViews';
 import { QuestionView } from '@/components/QuestionView';
+import { ExamScorePanel } from '@/features/exams/ExamScorePanel';
 import { cn } from '@/lib/cn';
 
 function praiseKey(percent: number): string {
@@ -108,22 +109,34 @@ export default function ResultPage() {
     <Page>
       <PageHeader title={t('result.title')} subtitle={test.title} onBack={() => navigate('/')} />
 
-      <div className="flex flex-col items-center">
-        <CircularProgress
-          value={attempt.percent}
-          label={`${Math.round(attempt.percent)}%`}
-          sublabel={`${attempt.score} / ${attempt.maxScore}`}
-          tone={attempt.percent >= 60 ? 'success' : attempt.percent >= 40 ? 'accent' : 'danger'}
+      {test.settings.exam ? (
+        <ExamScorePanel
+          config={test.settings.exam}
+          questions={questions}
+          results={attempt.results}
         />
-        <p className="mt-3 text-section-title text-text">{t(praiseKey(attempt.percent))}</p>
-      </div>
+      ) : (
+        <div className="flex flex-col items-center">
+          <CircularProgress
+            value={attempt.percent}
+            label={`${Math.round(attempt.percent)}%`}
+            sublabel={`${attempt.score} / ${attempt.maxScore}`}
+            tone={attempt.percent >= 60 ? 'success' : attempt.percent >= 40 ? 'accent' : 'danger'}
+          />
+          <p className="mt-3 text-section-title text-text">{t(praiseKey(attempt.percent))}</p>
+        </div>
+      )}
 
-      <div className="mt-5 grid grid-cols-3 gap-2">
-        <SummaryTile
-          icon={<Trophy size={16} strokeWidth={1.75} />}
-          value={attempt.score}
-          label={t('result.score')}
-        />
+      <div className={cn('mt-5 grid gap-2', test.settings.exam ? 'grid-cols-2' : 'grid-cols-3')}>
+        {/* An exam already leads with its own ball; a second, smaller one
+            computed per question would only contradict it. */}
+        {!test.settings.exam && (
+          <SummaryTile
+            icon={<Trophy size={16} strokeWidth={1.75} />}
+            value={attempt.score}
+            label={t('result.score')}
+          />
+        )}
         <SummaryTile
           icon={<Clock size={16} strokeWidth={1.75} />}
           value={formatDuration(timeSec)}
