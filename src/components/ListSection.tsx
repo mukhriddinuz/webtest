@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { SwitchControl } from './Switch';
+import { isApplePlatform } from '@/lib/platform';
 
 /**
  * The list Telegram builds almost every screen from. It runs edge to edge with
@@ -19,6 +20,16 @@ export interface ListSectionProps {
 }
 
 export function ListSection({ header, footer, className, children }: ListSectionProps) {
+  if (isApplePlatform()) {
+    return (
+      <section className={cn('mb-5', className)}>
+        {header && <h2 className="section-header">{header}</h2>}
+        <div className="overflow-hidden rounded-card bg-surface">{children}</div>
+        {footer && <p className="px-4 pt-1.5 text-small text-text-muted">{footer}</p>}
+      </section>
+    );
+  }
+
   return (
     // Negative margins undo the page gutter so the block spans the screen.
     <section className={cn('-mx-4 mb-2', className)}>
@@ -28,6 +39,23 @@ export function ListSection({ header, footer, className, children }: ListSection
       </div>
       {footer && <p className="px-4 py-2 text-small text-text-muted">{footer}</p>}
     </section>
+  );
+}
+
+/**
+ * A feed of rows — tests, results — which is the same list in a different
+ * costume, so it takes the same shape as a section.
+ */
+export function ListFeed({ className, children }: { className?: string; children: ReactNode }) {
+  return (
+    <div
+      className={cn(
+        isApplePlatform() ? 'overflow-hidden rounded-card bg-surface' : '-mx-4 bg-surface',
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }
 

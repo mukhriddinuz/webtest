@@ -10,6 +10,7 @@ import { usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page, PageHeader } from '@/app/AppLayout';
 import { IconButton } from '@/components/Button';
 import { EmptyState } from '@/components/EmptyState';
+import { ListFeed } from '@/components/ListSection';
 import { ErrorState, LoadingState } from '@/components/StateViews';
 import { Input } from '@/components/Input';
 import { TestCard } from '@/components/TestCard';
@@ -146,7 +147,7 @@ export default function MyTestsPage() {
       ) : visible.length === 0 ? (
         <EmptyState title={t('myTests.nothingFound')} />
       ) : (
-        <div className="-mx-4 bg-surface">
+        <ListFeed>
           {visible.map((test) => (
             <TestCard
               key={test.id}
@@ -159,7 +160,7 @@ export default function MyTestsPage() {
               }
             />
           ))}
-        </div>
+        </ListFeed>
       )}
     </Page>
   );

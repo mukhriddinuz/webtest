@@ -43,6 +43,9 @@ export interface TelegramBridge {
   getUser(): TelegramUser | null;
   getStartParam(): string | null;
 
+  /** The host client: 'ios', 'android', 'tdesktop', 'web', … */
+  getPlatform(): string;
+
   getColorScheme(): ColorScheme;
   /** Host palette (`bg_color`, `button_color`, …); null outside Telegram. */
   getThemeParams(): Record<string, string> | null;

@@ -11,6 +11,7 @@ import { usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page, PageHeader } from '@/app/AppLayout';
 import { Card } from '@/components/Card';
 import { EmptyState } from '@/components/EmptyState';
+import { ListFeed } from '@/components/ListSection';
 import { ErrorState, LoadingState } from '@/components/StateViews';
 
 /** Percentage color follows the same thresholds across the app. */
@@ -74,7 +75,7 @@ export default function ResultsPage() {
           onAction={() => navigate('/')}
         />
       ) : (
-        <div className="-mx-4 bg-surface">
+        <ListFeed>
           {rows.map((attempt) => {
             const test = testsById.get(attempt.testId);
             return (
@@ -111,7 +112,7 @@ export default function ResultsPage() {
               </button>
             );
           })}
-        </div>
+        </ListFeed>
       )}
     </Page>
   );
