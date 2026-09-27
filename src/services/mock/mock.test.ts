@@ -29,7 +29,7 @@ describe('seed data', () => {
   it('covers every test type and all four answer types', async () => {
     const tests = await mockApi.tests.list();
     const types = new Set(tests.map((test) => test.type));
-    expect([...types].sort()).toEqual(['contest', 'limited', 'live', 'standard']);
+    expect([...types].sort()).toEqual(['contest', 'exam', 'limited', 'live', 'standard']);
 
     const questions = await Promise.all(tests.map((test) => mockApi.tests.questions(test.id)));
     const answerTypes = new Set(questions.flat().map((question) => question.type));
@@ -267,5 +267,76 @@ describe('resolving a Telegram account', () => {
 
     expect(other.id).not.toBe('u_teacher_1');
     expect((await mockApi.users.stats(other.id)).created).toBe(0);
+  });
+});
+
+describe('exam variants', () => {
+  it('seeds a DTM paper whose blocks add up to 189', async () => {
+    const test = await mockApi.tests.get('e_dtm_math_physics');
+    const config = test.settings.exam;
+    const questions = await mockApi.tests.questions(test.id);
+
+    expect(config?.preset).toBe('dtm');
+    expect(questions).toHaveLength(90);
+
+    // Every question belongs to a block, and every block holds 30 of them.
+    const perSection = config!.sections.map(
+      (section) => questions.filter((question) => question.sectionId === section.id).length,
+    );
+    expect(perSection).toEqual([30, 30, 30]);
+
+    const max = config!.sections.reduce(
+      (sum, section, index) => sum + section.pointsPerQuestion * (perSection[index] as number),
+      0,
+    );
+    expect(Math.round(max)).toBe(config!.maxScore);
+  });
+
+  it('seeds a Milliy sertifikat variant with its level bands', async () => {
+    const test = await mockApi.tests.get('e_milliy_math');
+    const config = test.settings.exam;
+
+    expect(config?.preset).toBe('milliy');
+    expect(config?.maxScore).toBe(75);
+    expect(config?.approximate).toBe(true);
+    expect(config?.levels.map((level) => level.code)).toEqual(['A+', 'A', 'B+', 'B', 'C+', 'C']);
+    expect(await mockApi.tests.questions(test.id)).toHaveLength(43);
+  });
+
+  it('keeps every exam question answerable without a human marker', async () => {
+    for (const id of ['e_dtm_math_physics', 'e_milliy_math']) {
+      const questions = await mockApi.tests.questions(id);
+      for (const question of questions) {
+        if (question.type === 'single') {
+          expect(question.options.filter((option) => option.isCorrect)).toHaveLength(1);
+          expect(question.options.length).toBeGreaterThanOrEqual(4);
+          // A distractor that repeats the answer makes the question unfair.
+          const bodies = question.options.map((option) => JSON.stringify(option.content[0]));
+          expect(new Set(bodies).size).toBe(bodies.length);
+        } else {
+          expect(question.numericAnswer).toBeDefined();
+        }
+
+        // A formula printed with a zero term ("x^2 + 0x − 36") reads as a
+        // generator artefact rather than as an exam question.
+        for (const block of question.content) {
+          if (block.type === 'formula') {
+            expect(block.value).not.toMatch(/[+−-]\s*0(x|\s*=)/);
+          }
+        }
+      }
+    }
+  });
+});
+
+describe('guaranteed participants', () => {
+  it('gives the demo accounts the attempts the seed promises them', async () => {
+    // The pool is shuffled; naming an account here must still place it.
+    const mine = await mockApi.attempts.listByUser('u_teacher_1');
+    const taken = mine.filter((attempt) => attempt.status === 'submitted').map((a) => a.testId);
+
+    expect(taken).toContain('e_dtm_math_physics');
+    expect(taken).toContain('e_milliy_math');
+    expect(taken).toContain('t_chemistry');
   });
 });

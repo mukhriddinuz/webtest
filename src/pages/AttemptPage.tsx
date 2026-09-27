@@ -16,6 +16,7 @@ import { ErrorState, LoadingState } from '@/components/StateViews';
 import { ProgressBar } from '@/components/ProgressBar';
 import { QuestionNavigator } from '@/components/QuestionNavigator';
 import { QuestionView } from '@/components/QuestionView';
+import { sectionPosition } from '@/features/exams/examView';
 import { Timer } from '@/components/Timer';
 import { cn } from '@/lib/cn';
 
@@ -44,6 +45,8 @@ export default function AttemptPage() {
 
   const allowBack = test?.settings.allowBack ?? true;
   const current = questions[index];
+  // An exam is read block by block, so the block's own count leads the header.
+  const section = sectionPosition(test?.settings.exam, questions, index);
 
   // Hydrate local state once the attempt arrives (also after a page refresh).
   useEffect(() => {
@@ -181,9 +184,20 @@ export default function AttemptPage() {
         style={{ paddingTop: 'max(0.5rem, var(--safe-top))' }}
       >
         <div className="mb-2 flex items-center gap-2">
-          <span className="tnum text-body font-medium text-text">
-            {t('attempt.progress', { current: index + 1, total: questions.length })}
-          </span>
+          {/* The block's name can be long, so it sits above its own count
+              rather than competing with the timer for one line. */}
+          {section ? (
+            <span className="flex min-w-0 flex-col leading-tight">
+              <span className="truncate text-small text-text-muted">{section.title}</span>
+              <span className="tnum text-body font-medium text-text">
+                {t('exam.position', { current: section.current, total: section.total })}
+              </span>
+            </span>
+          ) : (
+            <span className="tnum min-w-0 truncate text-body font-medium text-text">
+              {t('attempt.progress', { current: index + 1, total: questions.length })}
+            </span>
+          )}
           <div className="ml-auto flex items-center gap-1">
             {attempt.deadlineAt && (
               <Timer deadline={attempt.deadlineAt} onExpire={() => void submit()} />

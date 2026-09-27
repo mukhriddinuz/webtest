@@ -1,4 +1,11 @@
-import type { GivenAnswer, Question, QuestionResult, TestSettings } from '@/services/types';
+import type {
+  ExamConfig,
+  ExamLevel,
+  GivenAnswer,
+  Question,
+  QuestionResult,
+  TestSettings,
+} from '@/services/types';
 
 /**
  * Pure grading logic. Kept free of React, storage and i18n so it can be moved
@@ -234,4 +241,81 @@ export function isAnswered(answer: GivenAnswer | undefined): boolean {
   if (!answer) return false;
   if (answer.optionIds && answer.optionIds.length > 0) return true;
   return (answer.value ?? '').trim() !== '';
+}
+
+/* ---------------------------------- exams --------------------------------- */
+
+export interface ExamSectionResult {
+  sectionId: string;
+  title: string;
+  subject: string;
+  correct: number;
+  total: number;
+  /** Ball earned in this section: `correct × pointsPerQuestion`. */
+  score: number;
+  maxScore: number;
+}
+
+export interface ExamGrade {
+  score: number;
+  maxScore: number;
+  sections: ExamSectionResult[];
+  /** The Milliy sertifikat band reached, or null when none is (yet) earned. */
+  level: string | null;
+  /** True while the score is a Rasch estimate rather than an official one. */
+  approximate: boolean;
+}
+
+/** The highest band whose threshold the score reaches; null when below them all. */
+export function examLevelFor(score: number, levels: readonly ExamLevel[]): string | null {
+  const reached = levels
+    .filter((level) => score >= level.minScore)
+    .sort((a, b) => b.minScore - a.minScore)[0];
+  return reached?.code ?? null;
+}
+
+/**
+ * Turns graded questions into the figure the exam actually reports.
+ *
+ * A DTM block test weighs each section by its own coefficient, so the ball
+ * follows from counting correct answers per section. A Milliy sertifikat is
+ * scored by a Rasch model we cannot reproduce, so the share of correct answers
+ * is scaled onto its 75-point range and reported as an estimate.
+ */
+export function gradeExam(
+  config: ExamConfig,
+  questions: readonly Question[],
+  results: readonly QuestionResult[],
+): ExamGrade {
+  const byQuestionId = new Map(results.map((result) => [result.questionId, result]));
+
+  const sections = config.sections.map((section): ExamSectionResult => {
+    const own = questions.filter((question) => question.sectionId === section.id);
+    const correct = own.filter((question) => byQuestionId.get(question.id)?.correct).length;
+    return {
+      sectionId: section.id,
+      title: section.title,
+      subject: section.subject,
+      correct,
+      total: own.length,
+      score: roundPoints(correct * section.pointsPerQuestion),
+      maxScore: roundPoints(own.length * section.pointsPerQuestion),
+    };
+  });
+
+  const answered = sections.reduce((sum, section) => sum + section.correct, 0);
+  const asked = sections.reduce((sum, section) => sum + section.total, 0);
+
+  const score =
+    config.preset === 'dtm'
+      ? roundPoints(sections.reduce((sum, section) => sum + section.score, 0))
+      : roundPoints(asked === 0 ? 0 : (answered / asked) * config.maxScore);
+
+  return {
+    score,
+    maxScore: config.maxScore,
+    sections,
+    level: config.levels.length === 0 ? null : examLevelFor(score, config.levels),
+    approximate: config.approximate,
+  };
 }

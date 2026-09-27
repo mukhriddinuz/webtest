@@ -133,6 +133,24 @@ host va ishtirokchi sifatida sinash mumkin:
 reyting to'liq ko'rinadi. Vaqtlar joriy vaqtga nisbatan hisoblanadi: bitta
 musobaqa 2 soatdan keyin boshlanadi, boshqasi hozir davom etmoqda.
 
+## Imtihon rejimi (DTM va Milliy sertifikat)
+
+`exam` turidagi testlar bo'limlarga bo'linadi va natijani boshqacha hisoblaydi.
+Barcha koeffitsient va daraja chegaralari `services/types.ts` dagi `ExamConfig`
+ichida **ma'lumot** sifatida saqlanadi — qoidalar o'zgarganda `mocks/content/exams.ts`
+dagi bitta joy tahrirlanadi, baholash kodiga tegilmaydi.
+
+- **DTM blok test** — 30 + 30 + 30 savol, koeffitsientlari 1.1 / 3.1 / 2.1, jami 189 ball.
+- **Milliy sertifikat** — 75 ball, A+ (70) dan C (46) gacha daraja.
+
+Milliy sertifikatning rasmiy natijasi savol qiyinligini hisobga oluvchi Rasch
+modeli bo'yicha chiqadi. Uni takrorlab bo'lmaydi, shuning uchun `ExamConfig.approximate`
+yoqilgan va natija ekranida baho taxminiy ekani yozib qo'yiladi.
+
+Savollar (`mocks/content/examQuestions.ts`) shu loyiha uchun yozilgan: javoblar
+formuladan hisoblanadi, parametrlar savol raqamidan kelib chiqadi. Haqiqiy imtihon
+varaqalari ko'chirilmagan — ular mualliflik huquqi bilan himoyalangan.
+
 ## Testlar
 
 ```bash

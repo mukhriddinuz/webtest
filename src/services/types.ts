@@ -18,7 +18,7 @@ export interface User {
   createdAt: string;
 }
 
-export type TestType = 'standard' | 'contest' | 'limited' | 'live';
+export type TestType = 'standard' | 'contest' | 'limited' | 'live' | 'exam';
 export type TestStatus = 'draft' | 'scheduled' | 'active' | 'finished' | 'archived';
 
 export type QuestionType = 'single' | 'multiple' | 'text' | 'numeric';
@@ -39,6 +39,8 @@ export interface Question {
   id: string;
   testId: string;
   order: number;
+  /** Exams only: which `ExamSection` this question belongs to. */
+  sectionId?: string;
   type: QuestionType;
   content: ContentBlock[];
   options: AnswerOption[];
@@ -50,6 +52,46 @@ export interface Question {
   /** Per-question limit in seconds — live tests only. */
   timeLimitSec?: number;
   explanation?: ContentBlock[];
+}
+
+/* --------------------------------- exams ---------------------------------- */
+
+/**
+ * Standardised exams score differently from an ordinary test: a DTM block test
+ * weighs each section by its own coefficient and reports a ball, while a Milliy
+ * sertifikat reports a level. Both are described by data rather than by code,
+ * because the rules are revised most years.
+ */
+export type ExamPreset = 'dtm' | 'milliy';
+
+export interface ExamSection {
+  id: string;
+  /** Shown above the questions, e.g. "1-blok fan". */
+  title: string;
+  subject: string;
+  /** DTM: the per-question coefficient, e.g. 3.1. */
+  pointsPerQuestion: number;
+}
+
+/** A band of the Milliy sertifikat scale, e.g. B+ from 60 points. */
+export interface ExamLevel {
+  code: string;
+  minScore: number;
+}
+
+export interface ExamConfig {
+  preset: ExamPreset;
+  /** 189 for a DTM block test, 75 for a Milliy sertifikat. */
+  maxScore: number;
+  sections: ExamSection[];
+  /** Milliy sertifikat only; empty for a preset that reports a ball. */
+  levels: ExamLevel[];
+  /**
+   * The official Milliy sertifikat score comes out of a Rasch model that
+   * weighs each question by its difficulty, which no practice app can
+   * reproduce. Screens showing such a score must say it is an estimate.
+   */
+  approximate: boolean;
 }
 
 export type AccessMode = 'open' | 'password' | 'invite';
@@ -78,6 +120,8 @@ export interface TestSettings {
   antiCheat: boolean;
   /** Live tests: speed bonus weight, 0..1. */
   speedBonus: number;
+  /** Exams only: how the raw answers turn into a ball or a level. */
+  exam?: ExamConfig;
 }
 
 export interface Test {

@@ -6,6 +6,7 @@ import { SEED_USERS } from './users';
 import { algebraTest, geometryTest, progressionsTest } from './content/math';
 import { biologyDraft, chemistryTest, physicsTest } from './content/science';
 import { closedContest, englishTest, historyTest, midtermContest } from './content/humanities';
+import { dtmExam, milliyMathExam } from './content/exams';
 import { emptyDatabase, setDatabase, type MockDatabase } from '@/services/mock/db';
 import { inviteCode } from '@/lib/id';
 import type {
@@ -42,10 +43,14 @@ const ATTEMPT_PLAN: Record<string, { count: number; mean?: number; spreadDays?: 
   t_chemistry: { count: 31, mean: 0.7, spreadDays: 7 },
   t_midterm: { count: 18, mean: 0.55, spreadDays: 1 },
   t_olympiad: { count: 27, mean: 0.63, spreadDays: 9 },
+  e_dtm_math_physics: { count: 24, mean: 0.52, spreadDays: 6 },
+  e_milliy_math: { count: 19, mean: 0.61, spreadDays: 12 },
 };
 
 /** Demo accounts that must appear among the participants of a given test. */
 const GUARANTEED_PARTICIPANTS: Record<string, string[]> = {
+  e_dtm_math_physics: ['u_student_1', 'u_teacher_1'],
+  e_milliy_math: ['u_teacher_1'],
   t_algebra: ['u_student_1'],
   t_english: ['u_student_1', 'u_teacher_1'],
   t_chemistry: ['u_student_1', 'u_teacher_1'],
@@ -68,6 +73,8 @@ export function buildSeedDatabase(now = Date.now()): MockDatabase {
     biologyDraft(),
     progressionsTest(),
     closedContest(now),
+    dtmExam(),
+    milliyMathExam(),
   ];
 
   const tests: Test[] = [];
@@ -93,7 +100,8 @@ export function buildSeedDatabase(now = Date.now()): MockDatabase {
     const generated = generateAttempts({
       test: built.test,
       questions: built.questions,
-      pool: [...guaranteed, ...participants],
+      pool: participants,
+      always: guaranteed,
       count: plan.count,
       now,
       meanAbility: plan.mean,

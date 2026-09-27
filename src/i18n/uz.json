@@ -106,7 +106,9 @@
     "standardDesc": "Istalgan vaqtda ishlanadigan oddiy test",
     "contestDesc": "Belgilangan vaqtda boshlanadigan musobaqa",
     "limitedDesc": "Ishtirokchilar soni cheklangan test",
-    "liveDesc": "Hamma birga, real vaqtda ishlaydigan test"
+    "liveDesc": "Hamma birga, real vaqtda ishlaydigan test",
+    "exam": "Imtihon",
+    "examDesc": "Rasmiy imtihon tuzilishidagi namunaviy variant"
   },
   "status": {
     "draft": "Qoralama",
@@ -552,5 +554,31 @@
     "full": "{{day}}-{{month}}, {{year}}",
     "short": "{{day}}-{{month}}",
     "dateTime": "{{date}}, {{time}}"
+  },
+  "exam": {
+    "title": "Imtihonlar",
+    "subtitle": "DTM va Milliy sertifikat namunaviy variantlari",
+    "empty": "Hozircha namunaviy variant yoʻq.",
+    "preset": {
+      "dtm": "DTM blok test",
+      "milliy": "Milliy sertifikat"
+    },
+    "presetHint": {
+      "dtm": "Majburiy fanlar, 1-blok va 2-blok — jami 189 ball.",
+      "milliy": "Umumtaʼlim fanlari: 75 ball, A+ dan C gacha daraja."
+    },
+    "minutes": "{{count}} daq",
+    "outOf": "{{max}} balldan",
+    "upTo": "{{level}} gacha",
+    "ballOf": "{{score}} / {{max}} ball",
+    "correctOf": "{{correct}} / {{total}} toʻgʻri",
+    "noLevel": "Sertifikat berilmaydi",
+    "approximateHint": "Rasmiy natija savollarning qiyinligini hisobga oluvchi Rasch modeli boʻyicha chiqariladi. Bu yerdagi baho — taxminiy.",
+    "sections": "Imtihon tuzilishi",
+    "sectionQuestions": "{{count}} ta savol",
+    "sectionPoints": "har biri {{points}} ball",
+    "position": "{{current}} / {{total}}",
+    "homeTitle": "Imtihonga tayyorgarlik",
+    "homeText": "DTM blok test va Milliy sertifikat namunalari"
   }
 }

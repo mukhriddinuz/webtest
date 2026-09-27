@@ -3,7 +3,8 @@ import { Radio, Swords, Timer, Users } from 'lucide-react';
 import type { TestType } from '@/services/types';
 import { cn } from '@/lib/cn';
 
-const TYPES: { value: TestType; icon: typeof Timer }[] = [
+/** The wizard creates the four author-made types; exams are seeded material. */
+const TYPES: { value: Exclude<TestType, 'exam'>; icon: typeof Timer }[] = [
   { value: 'standard', icon: Timer },
   { value: 'contest', icon: Swords },
   { value: 'limited', icon: Users },
@@ -15,6 +16,7 @@ const TONE: Record<TestType, string> = {
   contest: 'text-accent bg-accent-soft',
   limited: 'text-info bg-primary-soft',
   live: 'text-danger bg-danger-soft',
+  exam: 'text-success bg-success-soft',
 };
 
 export function StepType({

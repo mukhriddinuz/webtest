@@ -51,6 +51,8 @@ export function formulaOptions(...entries: string[]): AnswerOption[] {
 
 export interface QuestionSpec {
   type: QuestionType;
+  /** Exams only: the `ExamSection` this question belongs to. */
+  section?: string;
   content: ContentBlock[];
   options?: AnswerOption[];
   accepted?: string[];
@@ -65,6 +67,7 @@ export function buildQuestions(testId: string, specs: QuestionSpec[]): Question[
     id: `${testId}_q${index + 1}`,
     testId,
     order: index,
+    sectionId: spec.section,
     type: spec.type,
     content: spec.content,
     options: spec.options ?? [],
