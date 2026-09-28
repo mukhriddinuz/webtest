@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { blocksToPlainText } from '@/lib/content';
 import type { Question, Test } from '@/services/types';
+import { sectionQuota } from '@/features/exams/presets';
 
 export interface ValidationIssue {
   /** i18n key under `validation.` */
@@ -42,6 +43,35 @@ export function validateBasics(
   return errors;
 }
 
+/**
+ * An exam only reports a comparable ball if every block holds the number of
+ * questions the real paper does, so a short block blocks publishing.
+ */
+export function validateExam(test: Test, questions: Question[]): ValidationIssue[] {
+  if (test.type !== 'exam') return [];
+
+  const config = test.settings.exam;
+  if (!config) return [{ key: 'validation.examPresetRequired' }];
+
+  const issues: ValidationIssue[] = [];
+  for (const section of config.sections) {
+    if (section.subject.trim() === '') {
+      issues.push({ key: 'validation.examSubjectRequired', params: { title: section.title } });
+    }
+
+    const quota = sectionQuota(config.preset, section.id);
+    if (quota === undefined) continue;
+    const actual = questions.filter((question) => question.sectionId === section.id).length;
+    if (actual !== quota) {
+      issues.push({
+        key: 'validation.examSectionCount',
+        params: { title: section.title, count: quota, actual },
+      });
+    }
+  }
+  return issues;
+}
+
 /** Everything that must hold before a test can be published. */
 export function validateTest(test: Test, questions: Question[]): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
@@ -49,6 +79,7 @@ export function validateTest(test: Test, questions: Question[]): ValidationIssue
   const basics = validateBasics(test);
   if (basics.title) issues.push({ key: basics.title });
   if (questions.length === 0) issues.push({ key: 'validation.questionsRequired' });
+  issues.push(...validateExam(test, questions));
 
   questions.forEach((question, index) => {
     const n = index + 1;

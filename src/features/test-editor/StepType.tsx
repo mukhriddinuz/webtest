@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { Radio, Swords, Timer, Users } from 'lucide-react';
+import { GraduationCap, Radio, Swords, Timer, Users } from 'lucide-react';
 import type { TestType } from '@/services/types';
 import { cn } from '@/lib/cn';
 
-/** The wizard creates the four author-made types; exams are seeded material. */
-const TYPES: { value: Exclude<TestType, 'exam'>; icon: typeof Timer }[] = [
+const TYPES: { value: TestType; icon: typeof Timer }[] = [
   { value: 'standard', icon: Timer },
   { value: 'contest', icon: Swords },
   { value: 'limited', icon: Users },
   { value: 'live', icon: Radio },
+  { value: 'exam', icon: GraduationCap },
 ];
 
 const TONE: Record<TestType, string> = {

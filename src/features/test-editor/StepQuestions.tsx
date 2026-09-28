@@ -17,26 +17,31 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Copy, GripVertical, Pencil, Plus, Trash2, Upload } from 'lucide-react';
-import type { Question } from '@/services/types';
+import { Check, Copy, GripVertical, Pencil, Plus, Trash2, Upload } from 'lucide-react';
+import type { ExamConfig, Question } from '@/services/types';
+import { sectionQuota } from '@/features/exams/presets';
 import { blocksToPlainText } from '@/lib/content';
 import { Badge } from '@/components/Badge';
 import { Button, IconButton } from '@/components/Button';
 import { EmptyState } from '@/components/EmptyState';
+import { ListRow, ListSection } from '@/components/ListSection';
 import { MathText } from '@/components/MathText';
 
 export interface StepQuestionsProps {
   questions: Question[];
+  /** Set on an exam, which is written one block at a time. */
+  exam?: ExamConfig;
   onReorder: (questions: Question[]) => void;
   onEdit: (question: Question) => void;
   onDuplicate: (question: Question) => void;
   onRemove: (questionId: string) => void;
-  onAdd: () => void;
-  onImport: () => void;
+  onAdd: (sectionId?: string) => void;
+  onImport: (sectionId?: string) => void;
 }
 
 export function StepQuestions({
   questions,
+  exam,
   onReorder,
   onEdit,
   onDuplicate,
@@ -60,6 +65,70 @@ export function StepQuestions({
     onReorder(arrayMove(questions, from, to));
   };
 
+  if (exam) {
+    return (
+      <div className="flex flex-col gap-1">
+        <h2 className="text-section-title text-text">{t('wizard.questions')}</h2>
+        {exam.sections.map((section) => {
+          const own = questions.filter((question) => question.sectionId === section.id);
+          const quota = sectionQuota(exam.preset, section.id);
+          const complete = quota !== undefined && own.length === quota;
+          return (
+            <ListSection
+              key={section.id}
+              header={section.title}
+              footer={section.subject || undefined}
+            >
+              <ListRow
+                title={t('wizard.questions')}
+                value={
+                  quota === undefined
+                    ? t('exam.blockCount', { count: own.length })
+                    : t('exam.blockProgress', { count: own.length, total: quota })
+                }
+                trailing={
+                  complete ? (
+                    <span className="flex items-center gap-2 text-body text-text-muted">
+                      <span className="tnum">
+                        {t('exam.blockProgress', { count: own.length, total: quota })}
+                      </span>
+                      <Check size={18} strokeWidth={2.25} className="text-success" />
+                    </span>
+                  ) : undefined
+                }
+                chevron={false}
+              />
+              {own.map((question, index) => (
+                <ListRow
+                  key={question.id}
+                  title={`${index + 1}. ${blocksToPlainText(question.content).trim() || t('wizard.emptyQuestion')}`}
+                  subtitle={t(`questionType.${question.type}`)}
+                  onClick={() => onEdit(question)}
+                />
+              ))}
+              <ListRow
+                icon={<Plus size={16} strokeWidth={2} />}
+                iconClassName="text-primary"
+                title={t('exam.addToBlock')}
+                tone="primary"
+                chevron={false}
+                onClick={() => onAdd(section.id)}
+              />
+              <ListRow
+                icon={<Upload size={16} strokeWidth={1.75} />}
+                iconClassName="text-primary"
+                title={t('exam.importToBlock')}
+                tone="primary"
+                chevron={false}
+                onClick={() => onImport(section.id)}
+              />
+            </ListSection>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
@@ -68,14 +137,14 @@ export function StepQuestions({
       </div>
 
       <div className="flex gap-2">
-        <Button size="sm" icon={<Plus size={15} strokeWidth={1.75} />} onClick={onAdd}>
+        <Button size="sm" icon={<Plus size={15} strokeWidth={1.75} />} onClick={() => onAdd()}>
           {t('wizard.addQuestion')}
         </Button>
         <Button
           size="sm"
           variant="secondary"
           icon={<Upload size={15} strokeWidth={1.75} />}
-          onClick={onImport}
+          onClick={() => onImport()}
         >
           {t('wizard.importQuestions')}
         </Button>
@@ -86,7 +155,7 @@ export function StepQuestions({
           title={t('wizard.noQuestions')}
           description={t('wizard.noQuestionsText')}
           actionLabel={t('wizard.addQuestion')}
-          onAction={onAdd}
+          onAction={() => onAdd()}
         />
       ) : (
         <>

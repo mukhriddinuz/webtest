@@ -17,6 +17,7 @@ import { validateBasics, validateTest } from '@/features/test-editor/validation'
 import { forgetStep, recallStep, rememberStep } from '@/features/test-editor/lastStep';
 import { StepType } from '@/features/test-editor/StepType';
 import { StepBasics } from '@/features/test-editor/StepBasics';
+import { StepExamSetup } from '@/features/test-editor/StepExamSetup';
 import { StepQuestions } from '@/features/test-editor/StepQuestions';
 import { StepSettings } from '@/features/test-editor/StepSettings';
 import { StepReview } from '@/features/test-editor/StepReview';
@@ -28,11 +29,12 @@ const LAST_STEP = STEP_KEYS.length - 1;
 /** Index of the questions step, where the import sheet lives. */
 const QUESTIONS_STEP = 2;
 
-function blankQuestion(testId: string, order: number, live: boolean): Question {
+function blankQuestion(testId: string, order: number, live: boolean, sectionId?: string): Question {
   return {
     id: uid('q'),
     testId,
     order,
+    sectionId,
     type: 'single',
     content: [{ id: uid('b'), type: 'text', value: '' }],
     options: [
@@ -63,6 +65,8 @@ export default function TestEditorPage() {
   const [publishing, setPublishing] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [importOpen, setImportOpen] = useState(false);
+  // Which exam block the imported questions land in; undefined for a plain test.
+  const [importSection, setImportSection] = useState<string | undefined>(undefined);
 
   const test = draft.test;
   const issues = useMemo(
@@ -216,20 +220,33 @@ export default function TestEditorPage() {
         )}
 
         {step === 1 && test && (
-          <StepBasics test={test} onPatch={(patch) => draft.patchTest(patch as Partial<Test>)} />
+          <div className="flex flex-col gap-7">
+            {/* An exam has to know which paper it imitates before anything else. */}
+            {test.type === 'exam' && (
+              <StepExamSetup
+                test={test}
+                onPatch={(patch) => draft.patchTest(patch as Partial<Test>)}
+              />
+            )}
+            <StepBasics test={test} onPatch={(patch) => draft.patchTest(patch as Partial<Test>)} />
+          </div>
         )}
 
         {step === 2 && test && (
           <StepQuestions
             questions={draft.questions}
+            exam={test.settings.exam}
             onReorder={(questions) => draft.replaceQuestions(() => questions)}
             onEdit={setEditingQuestion}
-            onAdd={() =>
+            onAdd={(sectionId) =>
               setEditingQuestion(
-                blankQuestion(test.id, draft.questions.length, test.type === 'live'),
+                blankQuestion(test.id, draft.questions.length, test.type === 'live', sectionId),
               )
             }
-            onImport={() => setImportOpen(true)}
+            onImport={(sectionId) => {
+              setImportSection(sectionId);
+              setImportOpen(true);
+            }}
             onDuplicate={(question) =>
               draft.replaceQuestions((current) => [
                 ...current,
@@ -280,7 +297,10 @@ export default function TestEditorPage() {
             testId={test.id}
             onClose={() => setImportOpen(false)}
             onImport={(questions) =>
-              draft.replaceQuestions((current) => [...current, ...questions])
+              draft.replaceQuestions((current) => [
+                ...current,
+                ...questions.map((question) => ({ ...question, sectionId: importSection })),
+              ])
             }
           />
         </>

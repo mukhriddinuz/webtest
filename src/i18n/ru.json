@@ -176,7 +176,8 @@
     "validationTitle": "Исправьте перед публикацией",
     "validOk": "Все проверки пройдены",
     "published": "Тест опубликован",
-    "dragHint": "Перетащите, чтобы изменить порядок"
+    "dragHint": "Перетащите, чтобы изменить порядок",
+    "emptyQuestion": "(без текста)"
   },
   "validation": {
     "titleRequired": "Не указано название теста",
@@ -191,7 +192,10 @@
     "limitedNeedsLimit": "Укажите количество мест",
     "passwordRequired": "Введите пароль для защищённого доступа",
     "liveNeedsTime": "Укажите время на каждый вопрос",
-    "titleTooShort": "Название теста — минимум 3 символа"
+    "titleTooShort": "Название теста — минимум 3 символа",
+    "examPresetRequired": "Выберите шаблон экзамена",
+    "examSubjectRequired": "Укажите предмет для «{{title}}»",
+    "examSectionCount": "{{title}}: нужно {{count}} заданий, сейчас {{actual}}"
   },
   "editor": {
     "title": "Вопрос",
@@ -582,6 +586,21 @@
     "homeTitle": "Подготовка к экзамену",
     "homeText": "Пробные варианты DTM и Миллий сертификат",
     "questionCount": "{{count}} заданий",
-    "sectionsHint": "Баллы — за каждый верный ответ."
+    "sectionsHint": "Баллы — за каждый верный ответ.",
+    "section": {
+      "required": "Обязательные предметы",
+      "requiredSubjects": "Родной язык, Математика, История",
+      "first": "1-й блок",
+      "second": "2-й блок",
+      "main": "Основной предмет"
+    },
+    "setup": "Шаблон экзамена",
+    "setupHint": "Коэффициенты и границы уровней заданы шаблоном и не редактируются. Вы выбираете предметы и пишете задания.",
+    "subjectOf": "{{title}} — предмет",
+    "subjectPlaceholder": "Например: Математика",
+    "blockProgress": "{{count}} / {{total}}",
+    "blockCount": "{{count}} заданий",
+    "addToBlock": "Задание в этот блок",
+    "importToBlock": "Импорт в этот блок"
   }
 }
