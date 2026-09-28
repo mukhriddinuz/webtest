@@ -38,13 +38,13 @@ const dtmConfig: ExamConfig = {
     },
     {
       id: DTM_SECTIONS.first,
-      title: '1-blok fan',
+      title: '1-blok',
       subject: 'Matematika',
       pointsPerQuestion: 3.1,
     },
     {
       id: DTM_SECTIONS.second,
-      title: '2-blok fan',
+      title: '2-blok',
       subject: 'Fizika',
       pointsPerQuestion: 2.1,
     },

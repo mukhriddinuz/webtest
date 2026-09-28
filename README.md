@@ -161,6 +161,18 @@ Milliy sertifikatning rasmiy natijasi savol qiyinligini hisobga oluvchi Rasch
 modeli bo'yicha chiqadi. Uni takrorlab bo'lmaydi, shuning uchun `ExamConfig.approximate`
 yoqilgan va natija ekranida baho taxminiy ekani yozib qo'yiladi.
 
+### Imtihon yaratish
+
+Imtihon endi sehrgar orqali yaratiladi: `Yangi test` → `Imtihon` → qolip (DTM yoki
+Milliy sertifikat) → bloklarning fani. Koeffitsientlar, savollar soni va daraja
+chegaralari **qoliptan keladi va tahrirlanmaydi** (`features/exams/presets.ts`) —
+aks holda chiqqan ball haqiqiy imtihonga o'xshab ko'rinib, aslida boshqa narsani
+bildirar edi.
+
+Savollar qadami bloklarga bo'lingan: har birida `0 / 30` hisobi, o'sha blokka
+savol qo'shish va import qilish tugmalari bor. Blok to'lmagan bo'lsa,
+`validateExam` nashr qilishga yo'l bermaydi.
+
 Savollar (`mocks/content/examQuestions.ts`) shu loyiha uchun yozilgan: javoblar
 formuladan hisoblanadi, parametrlar savol raqamidan kelib chiqadi. Haqiqiy imtihon
 varaqalari ko'chirilmagan — ular mualliflik huquqi bilan himoyalangan.

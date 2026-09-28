@@ -176,7 +176,8 @@
     "validationTitle": "Nashr qilishdan oldin tuzating",
     "validOk": "Barcha tekshiruvlar muvaffaqiyatli o'tdi",
     "published": "Test nashr qilindi",
-    "dragHint": "Tartibni o'zgartirish uchun sudrab ko'chiring"
+    "dragHint": "Tartibni o'zgartirish uchun sudrab ko'chiring",
+    "emptyQuestion": "(matnsiz savol)"
   },
   "validation": {
     "titleRequired": "Test nomi kiritilmagan",
@@ -191,7 +192,10 @@
     "limitedNeedsLimit": "Cheklangan test uchun joylar sonini kiriting",
     "passwordRequired": "Parolli kirish uchun parol kiriting",
     "liveNeedsTime": "Jonli testda har bir savol uchun vaqt belgilang",
-    "titleTooShort": "Test nomi kamida 3 belgidan iborat bo'lsin"
+    "titleTooShort": "Test nomi kamida 3 belgidan iborat bo'lsin",
+    "examPresetRequired": "Imtihon qolipini tanlang",
+    "examSubjectRequired": "{{title}} uchun fanni kiriting",
+    "examSectionCount": "{{title}}: {{count}} ta savol kerak, hozir {{actual}} ta"
   },
   "editor": {
     "title": "Savol",
@@ -582,6 +586,21 @@
     "homeTitle": "Imtihonga tayyorgarlik",
     "homeText": "DTM blok test va Milliy sertifikat namunalari",
     "questionCount": "{{count}} ta savol",
-    "sectionsHint": "Ball — har bir toʻgʻri javob uchun."
+    "sectionsHint": "Ball — har bir toʻgʻri javob uchun.",
+    "section": {
+      "required": "Majburiy fanlar",
+      "requiredSubjects": "Ona tili, Matematika, Tarix",
+      "first": "1-blok",
+      "second": "2-blok",
+      "main": "Asosiy fan"
+    },
+    "setup": "Imtihon qolipi",
+    "setupHint": "Koeffitsientlar va daraja chegaralari qolip bilan belgilangan — ularni oʻzgartirib boʻlmaydi. Siz fanlarni tanlaysiz va savollarni yozasiz.",
+    "subjectOf": "{{title}} fani",
+    "subjectPlaceholder": "Masalan: Matematika",
+    "blockProgress": "{{count}} / {{total}}",
+    "blockCount": "{{count}} ta savol",
+    "addToBlock": "Shu blokka savol",
+    "importToBlock": "Shu blokka import"
   }
 }
