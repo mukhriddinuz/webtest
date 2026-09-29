@@ -9,6 +9,7 @@ import {
   PlayCircle,
   Plus,
   Radio,
+  ScanLine,
   Trophy,
 } from 'lucide-react';
 import { api } from '@/services';
@@ -25,9 +26,10 @@ import {
   useUserAttempts,
   useUserStats,
 } from '@/hooks/queries';
+import { useQrScanner } from '@/features/scan/useQrScanner';
 import { useHaptics, usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page, PageHeader } from '@/app/AppLayout';
-import { Button } from '@/components/Button';
+import { Button, IconButton } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Countdown } from '@/components/Countdown';
 import { EmptyIllustration } from '@/components/EmptyState';
@@ -356,6 +358,7 @@ function JoinCodeCard({ inputRef }: { inputRef: React.RefObject<HTMLInputElement
   const haptics = useHaptics();
   const [code, setCode] = useState('');
   const [joining, setJoining] = useState(false);
+  const scanner = useQrScanner();
 
   const join = async (value: string) => {
     if (value.length !== CODE_LENGTH || joining) return;
@@ -398,6 +401,17 @@ function JoinCodeCard({ inputRef }: { inputRef: React.RefObject<HTMLInputElement
           code !== '' && 'font-mono tracking-[0.3em]',
         )}
       />
+      {/* Drawn only where Telegram can open a camera; elsewhere it would do nothing. */}
+      {scanner.supported && (
+        <IconButton
+          label={t('scan.button')}
+          className="shrink-0 text-primary hover:text-primary"
+          disabled={scanner.scanning}
+          onClick={() => void scanner.scan()}
+        >
+          <ScanLine size={22} strokeWidth={1.75} />
+        </IconButton>
+      )}
       <Button
         className="shrink-0"
         loading={joining}
