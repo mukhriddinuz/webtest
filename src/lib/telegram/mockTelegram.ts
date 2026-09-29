@@ -6,6 +6,8 @@ export interface MockBridge extends TelegramBridge {
   setUser(user: TelegramUser | null): void;
   setColorScheme(scheme: ColorScheme | 'system'): void;
   getHapticLog(): string[];
+  /** Lets tests see whether the app asked to confirm before closing. */
+  isClosingConfirmationOn(): boolean;
 }
 
 const SYSTEM_DARK = '(prefers-color-scheme: dark)';
@@ -25,6 +27,7 @@ export function createMockBridge(defaultUser: TelegramUser | null): MockBridge {
   let preference: ColorScheme | 'system' = 'system';
   let mainState: MainButtonState | null = null;
   const hapticLog: string[] = [];
+  let closingConfirmation = false;
 
   // Older webviews (and test environments) may not expose matchMedia.
   const mediaQuery = (): MediaQueryList | null =>
@@ -96,6 +99,10 @@ export function createMockBridge(defaultUser: TelegramUser | null): MockBridge {
       notification: (type) => logHaptic(`notification:${type}`),
     },
 
+    setClosingConfirmation(enabled) {
+      closingConfirmation = enabled;
+    },
+    isClosingConfirmationOn: () => closingConfirmation,
     setThemeColors: () => undefined,
     openLink: (url) => window.open(url, '_blank', 'noopener'),
     shareUrl(url, text) {

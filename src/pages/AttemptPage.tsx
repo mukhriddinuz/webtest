@@ -11,7 +11,11 @@ import { useHaptics, usePrimaryAction } from '@/hooks/usePrimaryAction';
 import { Page } from '@/app/AppLayout';
 import { BottomSheet } from '@/components/BottomSheet';
 import { Button, IconButton } from '@/components/Button';
-import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { ConnectionBanner } from '@/features/attempt/ConnectionBanner';
+import { FinishSheet } from '@/features/attempt/FinishSheet';
+import { summarise } from '@/features/attempt/finishSummary';
+import { useAnswerSync, useOnline, withQueued } from '@/features/attempt/useAnswerSync';
+import { useClosingConfirmation, useWakeLock } from '@/hooks/useExamGuards';
 import { ErrorState, LoadingState } from '@/components/StateViews';
 import { ProgressBar } from '@/components/ProgressBar';
 import { QuestionNavigator } from '@/components/QuestionNavigator';
@@ -48,35 +52,67 @@ export default function AttemptPage() {
   // An exam is read block by block, so the block's own count leads the header.
   const section = sectionPosition(test?.settings.exam, questions, index);
 
+  const online = useOnline();
+  const sync = useAnswerSync(
+    useCallback(
+      (answer: GivenAnswer) =>
+        attemptId ? api.attempts.saveAnswer(attemptId, answer) : Promise.resolve(),
+      [attemptId],
+    ),
+  );
+
+  const { queued } = sync;
+
   // Hydrate local state once the attempt arrives (also after a page refresh).
+  // A reload must not wipe answers that are still on their way to the server.
   useEffect(() => {
     if (!attempt) return;
-    setAnswers(attempt.answers);
+    setAnswers(withQueued(attempt.answers, queued()));
     setFlagged(attempt.flagged);
     if (attempt.status !== 'in_progress' && attemptId && testId) {
       navigate(`/t/${testId}/result/${attemptId}`, { replace: true });
     }
-  }, [attempt, attemptId, testId, navigate]);
+  }, [attempt, attemptId, testId, navigate, queued]);
 
   useEffect(() => {
     questionShownAt.current = Date.now();
   }, [index]);
 
-  const submit = useCallback(async () => {
-    if (!attemptId || submitted.current) return;
-    submitted.current = true;
-    setSubmitting(true);
-    try {
-      await api.attempts.submit(attemptId);
-      haptics.notification('success');
-      navigate(`/t/${testId}/result/${attemptId}`, { replace: true });
-    } catch {
-      submitted.current = false;
-      toast.error(t('errors.unknown'));
-    } finally {
-      setSubmitting(false);
-    }
-  }, [attemptId, testId, navigate, haptics, t]);
+  // The paper is only in danger while it is running.
+  const running = attempt?.status === 'in_progress';
+  useClosingConfirmation(running);
+  useWakeLock(running);
+
+  /**
+   * `force` is for the clock running out: the paper closes whether or not every
+   * answer got through, since waiting would only keep it open past its time.
+   * A candidate finishing by choice is held back instead — closing over answers
+   * that never reached the server would silently cost them marks.
+   */
+  const submit = useCallback(
+    async (force = false) => {
+      if (!attemptId || submitted.current) return;
+      submitted.current = true;
+      setSubmitting(true);
+      try {
+        const clean = await sync.flush();
+        if (!clean && !force) {
+          submitted.current = false;
+          toast.error(t('attempt.cannotFinishUnsent', { count: sync.queued().length }));
+          return;
+        }
+        await api.attempts.submit(attemptId);
+        haptics.notification('success');
+        navigate(`/t/${testId}/result/${attemptId}`, { replace: true });
+      } catch {
+        submitted.current = false;
+        toast.error(t('errors.unknown'));
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [attemptId, testId, navigate, haptics, t, sync],
+  );
 
   /* ------------------------------- anti-cheat ------------------------------ */
 
@@ -98,9 +134,9 @@ export default function AttemptPage() {
   const persist = useCallback(
     (answer: GivenAnswer) => {
       setAnswers((previous) => ({ ...previous, [answer.questionId]: answer }));
-      if (attemptId) void api.attempts.saveAnswer(attemptId, answer);
+      if (attemptId) sync.send(answer);
     },
-    [attemptId],
+    [attemptId, sync],
   );
 
   const selectOption = (optionId: string) => {
@@ -143,7 +179,12 @@ export default function AttemptPage() {
     void api.attempts.toggleFlag(attemptId, current.id);
   };
 
-  const unansweredCount = questions.filter((question) => !isAnswered(answers[question.id])).length;
+  const summary = summarise(
+    questions,
+    (question) => isAnswered(answers[question.id]),
+    flagged,
+    test?.settings.exam,
+  );
   const isLast = index === questions.length - 1;
 
   usePrimaryAction(
@@ -200,7 +241,18 @@ export default function AttemptPage() {
           )}
           <div className="ml-auto flex items-center gap-1">
             {attempt.deadlineAt && (
-              <Timer deadline={attempt.deadlineAt} onExpire={() => void submit()} />
+              <Timer
+                deadline={attempt.deadlineAt}
+                totalSec={
+                  (new Date(attempt.deadlineAt).getTime() - new Date(attempt.startedAt).getTime()) /
+                  1000
+                }
+                onThreshold={(thresholdSec) => {
+                  haptics.notification('warning');
+                  toast.info(t('attempt.minutesLeft', { count: Math.round(thresholdSec / 60) }));
+                }}
+                onExpire={() => void submit(true)}
+              />
             )}
             <IconButton label={t('attempt.flag')} onClick={toggleFlag}>
               <Flag
@@ -216,6 +268,7 @@ export default function AttemptPage() {
           </div>
         </div>
         <ProgressBar value={index + 1} max={questions.length} size="sm" />
+        <ConnectionBanner online={online} unsent={sync.unsent} failing={sync.failing} />
       </header>
 
       <div className="card mt-4 p-4">
@@ -275,19 +328,16 @@ export default function AttemptPage() {
         />
       </BottomSheet>
 
-      <ConfirmDialog
+      <FinishSheet
         open={confirmFinish}
-        title={t('attempt.finishTitle')}
-        description={
-          unansweredCount === 0
-            ? t('attempt.finishAllAnswered')
-            : t('attempt.finishUnanswered', { count: unansweredCount })
-        }
-        confirmLabel={t('common.finish')}
-        tone={unansweredCount === 0 ? 'primary' : 'danger'}
+        summary={summary}
+        unsent={sync.unsent}
+        allowBack={allowBack}
+        currentIndex={index}
         loading={submitting}
-        onCancel={() => setConfirmFinish(false)}
-        onConfirm={() => void submit()}
+        onJump={setIndex}
+        onClose={() => setConfirmFinish(false)}
+        onFinish={() => void submit()}
       />
     </Page>
   );

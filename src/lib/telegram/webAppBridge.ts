@@ -110,6 +110,12 @@ export function createWebAppBridge(app: RawTelegramWebApp): TelegramBridge {
       notification: (type: HapticNotification) => app.HapticFeedback.notificationOccurred(type),
     },
 
+    setClosingConfirmation(enabled) {
+      // Only exists from Bot API 6.2; older clients simply do not ask.
+      if (enabled) app.enableClosingConfirmation?.();
+      else app.disableClosingConfirmation?.();
+    },
+
     setThemeColors(background) {
       // setBottomBarColor only exists from Bot API 7.10 onwards.
       app.setHeaderColor(background);
