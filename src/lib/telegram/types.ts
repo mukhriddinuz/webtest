@@ -76,6 +76,17 @@ export interface TelegramBridge {
     notification(type: HapticNotification): void;
   };
 
+  /** Whether this client can open a camera scanner (Bot API 6.4). */
+  canScanQr(): boolean;
+
+  /**
+   * Opens the scanner and resolves with the first text it reads, or null if the
+   * user closed it without reading anything or it could not be opened. The text
+   * is whatever was printed on the code: untrusted, to be parsed and never
+   * opened as an address.
+   */
+  scanQr(prompt?: string): Promise<string | null>;
+
   /**
    * While on, Telegram asks the user to confirm before closing the Mini App.
    * A no-op on clients that predate it, and outside Telegram.

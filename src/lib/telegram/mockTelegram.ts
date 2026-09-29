@@ -99,6 +99,9 @@ export function createMockBridge(defaultUser: TelegramUser | null): MockBridge {
       notification: (type) => logHaptic(`notification:${type}`),
     },
 
+    // A browser has no Telegram camera; tests exercise the real bridge instead.
+    canScanQr: () => false,
+    scanQr: () => Promise.resolve(null),
     setClosingConfirmation(enabled) {
       closingConfirmation = enabled;
     },

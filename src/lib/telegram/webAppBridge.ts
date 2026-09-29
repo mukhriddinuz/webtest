@@ -1,4 +1,5 @@
 import { createEmitter } from './emitter';
+import { versionAtLeast } from './version';
 import type { RawTelegramWebApp } from './webAppTypes';
 import type {
   ColorScheme,
@@ -108,6 +109,42 @@ export function createWebAppBridge(app: RawTelegramWebApp): TelegramBridge {
       selection: () => app.HapticFeedback.selectionChanged(),
       impact: (style: HapticImpact) => app.HapticFeedback.impactOccurred(style),
       notification: (type: HapticNotification) => app.HapticFeedback.notificationOccurred(type),
+    },
+
+    canScanQr: () =>
+      typeof app.showScanQrPopup === 'function' &&
+      // Older clients lack the method entirely, but some expose a stub that
+      // does nothing; the version is the reliable signal.
+      (app.isVersionAtLeast ? app.isVersionAtLeast('6.4') : versionAtLeast(app.version, '6.4')),
+
+    scanQr(prompt) {
+      return new Promise<string | null>((resolve) => {
+        if (typeof app.showScanQrPopup !== 'function') {
+          resolve(null);
+          return;
+        }
+
+        // A promise settles once, and the first thing to finish it also drops the
+        // listener, so a "closed" that follows a reading never gets to override it.
+        const finish = (value: string | null) => {
+          app.offEvent('scanQrPopupClosed', onClosed);
+          resolve(value);
+        };
+        // Closing the scanner without a reading raises this, and only this.
+        const onClosed = () => finish(null);
+        app.onEvent('scanQrPopupClosed', onClosed);
+
+        try {
+          app.showScanQrPopup({ text: prompt }, (data) => {
+            finish(data);
+            // Returning true closes the scanner: one reading is all that is wanted.
+            return true;
+          });
+        } catch {
+          // Already open, or refused: there is nothing to wait for.
+          finish(null);
+        }
+      });
     },
 
     setClosingConfirmation(enabled) {

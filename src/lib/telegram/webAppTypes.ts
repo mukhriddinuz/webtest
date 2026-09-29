@@ -59,6 +59,11 @@ export interface RawTelegramWebApp {
   openLink(url: string, options?: { try_instant_view?: boolean }): void;
   openTelegramLink(url: string): void;
   switchInlineQuery?(query: string, chatTypes?: string[]): void;
+  /** Bot API 6.4: opens the native QR scanner. The callback may return true to close it. */
+  showScanQrPopup?(params: { text?: string }, callback?: (data: string) => boolean | void): void;
+  closeScanQrPopup?(): void;
+  /** Bot API 6.1. */
+  isVersionAtLeast?(version: string): boolean;
   /** Bot API 6.2: asks "close this?" when the user swipes or taps ✕. */
   enableClosingConfirmation?(): void;
   disableClosingConfirmation?(): void;

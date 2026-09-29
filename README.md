@@ -161,6 +161,23 @@ Milliy sertifikatning rasmiy natijasi savol qiyinligini hisobga oluvchi Rasch
 modeli bo'yicha chiqadi. Uni takrorlab bo'lmaydi, shuning uchun `ExamConfig.approximate`
 yoqilgan va natija ekranida baho taxminiy ekani yozib qo'yiladi.
 
+### QR kodni skanerlash
+
+Bosh sahifadagi kod maydonining yonida kamera tugmasi bor: Telegramning o'z skaneri
+(`WebApp.showScanQrPopup`, Bot API 6.4) ochiladi, o'qilgan kod jonli xonaga yoki
+testga olib boradi. Tugma faqat skaner bor joyda chiziladi — oddiy brauzerda va
+eski klientda u umuman ko'rinmaydi.
+
+QR ichidagi matn **ishonchsiz ma'lumot** hisoblanadi: koridordagi plakatga har kim
+istalgan havolani bosib qo'yishi mumkin. Shuning uchun `lib/scan.ts` uni faqat uch
+shaklda taniydi — 6 xonali kod, ilovaning o'z manzilidagi `/live/<id>` va `/t/<id>` —
+va undan faqat identifikator oladi. Yo'nalishni ilovaning o'zi shu identifikatordan
+quradi; skanerlangan matnning o'zi hech qachon ochilmaydi. `/live/<id>/host`
+ataylab qabul qilinmaydi: o'yinchi boshlovchi boshqaruviga tushib qolmasligi kerak.
+
+Backend ulanmaguncha skaner faqat **shu qurilmadagi** ma'lumotni topa oladi (kodni
+qo'lda yozgandagi kabi): boshqa telefonda ochilgan xona bu yerda yo'q.
+
 ### Imtihon paytidagi himoya
 
 Uch soatlik varaqni telefon emas, faqat nomzod yakunlashi kerak:

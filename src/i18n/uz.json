@@ -616,5 +616,11 @@
     "blockCount": "{{count}} ta savol",
     "addToBlock": "Shu blokka savol",
     "importToBlock": "Shu blokka import"
+  },
+  "scan": {
+    "button": "QR kodni skanerlash",
+    "prompt": "Jonli test yoki test QR kodini kameraga qarating",
+    "unknown": "Bu QR kod ilovaga tegishli emas",
+    "notFound": "Bu QR koddagi test yoki sessiya topilmadi"
   }
 }
