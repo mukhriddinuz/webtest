@@ -59,6 +59,9 @@ export interface RawTelegramWebApp {
   openLink(url: string, options?: { try_instant_view?: boolean }): void;
   openTelegramLink(url: string): void;
   switchInlineQuery?(query: string, chatTypes?: string[]): void;
+  /** Bot API 6.2: asks "close this?" when the user swipes or taps ✕. */
+  enableClosingConfirmation?(): void;
+  disableClosingConfirmation?(): void;
   setHeaderColor(color: string): void;
   setBackgroundColor(color: string): void;
   setBottomBarColor?(color: string): void;

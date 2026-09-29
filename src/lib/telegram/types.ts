@@ -77,6 +77,12 @@ export interface TelegramBridge {
   };
 
   /**
+   * While on, Telegram asks the user to confirm before closing the Mini App.
+   * A no-op on clients that predate it, and outside Telegram.
+   */
+  setClosingConfirmation(enabled: boolean): void;
+
+  /**
    * Paints the Telegram chrome (header, background and bottom bar) with the
    * app background, so no seam shows between them.
    */

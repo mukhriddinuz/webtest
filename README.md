@@ -13,13 +13,13 @@ npm run dev      # http://localhost:5173
 
 Boshqa buyruqlar:
 
-| Buyruq | Vazifasi |
-|---|---|
-| `npm run build` | Ishlab chiqarish uchun yig'ish (`dist/`) |
-| `npm run preview` | Yig'ilgan versiyani ko'rish |
-| `npm test` | Vitest (grading, import, jonli simulyator, mock API, ilova smoke-testi) |
-| `npm run lint` | ESLint (0 warning) |
-| `npm run format` | Prettier |
+| Buyruq            | Vazifasi                                                                |
+| ----------------- | ----------------------------------------------------------------------- |
+| `npm run build`   | Ishlab chiqarish uchun yig'ish (`dist/`)                                |
+| `npm run preview` | Yig'ilgan versiyani ko'rish                                             |
+| `npm test`        | Vitest (grading, import, jonli simulyator, mock API, ilova smoke-testi) |
+| `npm run lint`    | ESLint (0 warning)                                                      |
+| `npm run format`  | Prettier                                                                |
 
 ## Brauzer rejimi va Dev panel
 
@@ -160,6 +160,23 @@ dagi bitta joy tahrirlanadi, baholash kodiga tegilmaydi.
 Milliy sertifikatning rasmiy natijasi savol qiyinligini hisobga oluvchi Rasch
 modeli bo'yicha chiqadi. Uni takrorlab bo'lmaydi, shuning uchun `ExamConfig.approximate`
 yoqilgan va natija ekranida baho taxminiy ekani yozib qo'yiladi.
+
+### Imtihon paytidagi himoya
+
+Uch soatlik varaqni telefon emas, faqat nomzod yakunlashi kerak:
+
+- **Yopishni tasdiqlash** — ishlash paytida ✕ yoki pastga tortish "yopasizmi?" deb so'raydi
+  (`WebApp.enableClosingConfirmation`).
+- **Ekran o'chmaydi** — Screen Wake Lock; qo'llab-quvvatlanmasa jim o'tkazib yuboriladi.
+- **Vaqt ogohlantirishi** — 10 va 5 daqiqa qolganda taymer sariq bo'ladi va haptik beradi
+  (`lib/timeWarnings.ts`). Qisqa testda ogohlantirish berilmaydi.
+- **Yakunlashdan oldingi xulosa** — javob berilgan / belgilangan / javobsiz, imtihonda blok
+  bo'yicha; blokka bosilsa birinchi bo'sh savolga o'tadi.
+- **Aloqa uzilishi** — javob endi "yubor va unut" emas: yuborilmagani navbatda turadi
+  (`features/attempt/useAnswerSync.ts`), aloqa qaytganda qayta yuboriladi va yakunlash
+  navbat bo'shaguncha to'xtatiladi. Faqat vaqt tugaganda varaq baribir yopiladi.
+
+Dev panelida "Xato simulyatsiyasi" ni 100% qilib, bularni sinash mumkin.
 
 ### Imtihon yaratish
 
