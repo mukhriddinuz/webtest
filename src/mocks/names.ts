@@ -65,11 +65,16 @@ export const LAST_NAMES = [
   'Sultonova',
 ];
 
-/** Deterministic name for participant #index. */
+/**
+ * Deterministic name for participant #index. First and last names alternate
+ * between male and female forms, so a pair is only ever built from matching
+ * ones; the result is unique for the first 400 indexes.
+ */
+export const UNIQUE_NAMES = (FIRST_NAMES.length * LAST_NAMES.length) / 2;
+
 export function participantName(index: number): string {
-  const first = FIRST_NAMES[index % FIRST_NAMES.length] as string;
-  const last = LAST_NAMES[
-    Math.floor(index / FIRST_NAMES.length + index * 7) % LAST_NAMES.length
-  ] as string;
-  return `${first} ${last}`;
+  const slot = (index * 37 + 11) % UNIQUE_NAMES;
+  const first = slot % FIRST_NAMES.length;
+  const last = Math.floor(slot / FIRST_NAMES.length) * 2 + (first % 2);
+  return `${FIRST_NAMES[first] as string} ${LAST_NAMES[last] as string}`;
 }

@@ -51,36 +51,62 @@ const dtmConfig: ExamConfig = {
   ],
 };
 
-export const dtmExam = (): TestSpec => ({
-  id: 'e_dtm_math_physics',
-  authorId: 'u_teacher_1',
-  type: 'exam',
-  title: 'DTM blok test — Matematika / Fizika',
-  description:
-    'Kirish imtihoni tuzilishidagi namunaviy variant: majburiy fanlar, 1-blok va 2-blok. Savollar shu ilova uchun yozilgan.',
-  subject: 'Matematika',
-  status: 'active',
-  createdAgoDays: 3,
-  settings: {
-    durationMin: 180,
-    attemptLimit: 3,
-    allowBack: true,
-    // Sections must stay in their own order, so nothing here is shuffled.
-    shuffleQuestions: false,
-    shuffleOptions: false,
-    showResult: 'immediately',
-    showCorrectAnswers: true,
-    exam: dtmConfig,
-  },
-  questions: [
-    ...examQuestionSets.nativeLanguage(DTM_SECTIONS.required),
-    ...examQuestionSets.math(10, DTM_SECTIONS.required),
-    ...examQuestionSets.history(DTM_SECTIONS.required),
-    ...examQuestionSets.math(22, DTM_SECTIONS.first, 11),
-    ...examQuestionSets.mathNumeric(8, DTM_SECTIONS.first),
-    ...examQuestionSets.physics(30, DTM_SECTIONS.second),
-  ],
-});
+interface DtmVariantInput {
+  id: string;
+  authorId: string;
+  title: string;
+  description: string;
+  createdAgoDays: number;
+  /** Shifts every generated question, so each variant is a different paper. */
+  offset?: number;
+  durationMin?: number;
+  attemptLimit?: number;
+  status?: TestSpec['status'];
+}
+
+export const dtmVariant = (input: DtmVariantInput): TestSpec => {
+  const offset = input.offset ?? 0;
+  return {
+    id: input.id,
+    authorId: input.authorId,
+    type: 'exam',
+    title: input.title,
+    description: input.description,
+    subject: 'Matematika',
+    coverImageId: 'img_cover_dtm',
+    status: input.status ?? 'active',
+    createdAgoDays: input.createdAgoDays,
+    settings: {
+      durationMin: input.durationMin ?? 180,
+      attemptLimit: input.attemptLimit ?? 3,
+      allowBack: true,
+      // Sections must stay in their own order, so nothing here is shuffled.
+      shuffleQuestions: false,
+      shuffleOptions: false,
+      showResult: 'immediately',
+      showCorrectAnswers: true,
+      exam: dtmConfig,
+    },
+    questions: [
+      ...examQuestionSets.nativeLanguage(DTM_SECTIONS.required),
+      ...examQuestionSets.math(10, DTM_SECTIONS.required, offset),
+      ...examQuestionSets.history(DTM_SECTIONS.required),
+      ...examQuestionSets.math(22, DTM_SECTIONS.first, 11 + offset),
+      ...examQuestionSets.mathNumeric(8, DTM_SECTIONS.first, offset),
+      ...examQuestionSets.physics(30, DTM_SECTIONS.second, offset),
+    ],
+  };
+};
+
+export const dtmExam = (): TestSpec =>
+  dtmVariant({
+    id: 'e_dtm_math_physics',
+    authorId: 'u_teacher_1',
+    title: 'DTM blok test — Matematika / Fizika',
+    description:
+      'Kirish imtihoni tuzilishidagi namunaviy variant: majburiy fanlar, 1-blok va 2-blok. Savollar shu ilova uchun yozilgan.',
+    createdAgoDays: 3,
+  });
 
 /* --------------------------- Milliy sertifikat ---------------------------- */
 
@@ -111,28 +137,70 @@ const milliyConfig: ExamConfig = {
   ],
 };
 
-export const milliyMathExam = (): TestSpec => ({
-  id: 'e_milliy_math',
-  authorId: 'u_teacher_1',
+interface MilliyInput {
+  id: string;
+  authorId: string;
+  title: string;
+  description: string;
+  subject: string;
+  createdAgoDays: number;
+  questions: (section: string) => TestSpec['questions'];
+  durationMin?: number;
+  status?: TestSpec['status'];
+}
+
+export const milliyExam = (input: MilliyInput): TestSpec => ({
+  id: input.id,
+  authorId: input.authorId,
   type: 'exam',
-  title: 'Milliy sertifikat — Matematika',
-  description:
-    'Yopiq va qisqa javobli savollardan iborat namunaviy variant. Rasmiy imtihondagi 2 ta kengaytirilgan javobli savol avtomatik tekshirilmagani uchun kiritilmagan.',
-  subject: 'Matematika',
-  status: 'active',
-  createdAgoDays: 5,
+  title: input.title,
+  description: input.description,
+  subject: input.subject,
+  coverImageId: 'img_cover_milliy',
+  status: input.status ?? 'active',
+  createdAgoDays: input.createdAgoDays,
   settings: {
-    durationMin: 150,
+    durationMin: input.durationMin ?? 150,
     attemptLimit: 3,
     allowBack: true,
     shuffleQuestions: false,
     shuffleOptions: false,
     showResult: 'immediately',
     showCorrectAnswers: true,
-    exam: milliyConfig,
+    exam: {
+      ...milliyConfig,
+      sections: [
+        {
+          id: MILLIY_SECTION,
+          title: input.subject,
+          subject: input.subject,
+          pointsPerQuestion: 1,
+        },
+      ],
+    },
   },
-  questions: [
-    ...examQuestionSets.math(20, MILLIY_SECTION, 40),
-    ...examQuestionSets.mathNumeric(23, MILLIY_SECTION, 12),
-  ],
+  questions: input.questions(MILLIY_SECTION),
 });
+
+export const milliyMathVariant = (
+  input: Omit<MilliyInput, 'questions' | 'subject'> & { offset: number },
+): TestSpec =>
+  milliyExam({
+    ...input,
+    subject: 'Matematika',
+    questions: (section) => [
+      ...examQuestionSets.math(20, section, 40 + input.offset),
+      ...examQuestionSets.mathNumeric(23, section, 12 + input.offset),
+    ],
+  });
+
+export const milliyMathExam = (): TestSpec =>
+  milliyMathVariant({
+    id: 'e_milliy_math',
+    authorId: 'u_teacher_1',
+    title: 'Milliy sertifikat — Matematika',
+    description:
+      'Yopiq va qisqa javobli savollardan iborat namunaviy variant. Rasmiy imtihondagi 2 ta kengaytirilgan javobli savol avtomatik tekshirilmagani uchun kiritilmagan.',
+    createdAgoDays: 5,
+    offset: 0,
+  });

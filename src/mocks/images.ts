@@ -148,6 +148,21 @@ export const SEED_IMAGES: Record<string, string> = {
   img_cover_geometry: cover('△', '#31B545'),
   img_cover_history: cover('XIV', '#E53935'),
   img_cover_chemistry: cover('H₂O', '#8B5CF6'),
+  img_cover_biology: cover('DNK', '#31B545'),
+  img_cover_geography: cover('GEO', '#0EA5E9'),
+  img_cover_it: cover('</>', '#6366F1'),
+  img_cover_literature: cover('Ad', '#EC4899'),
+  img_cover_astronomy: cover('★', '#F59B23'),
+  img_cover_uzbek: cover('Aa', '#14B8A6'),
+  img_cover_russian: cover('Ру', '#E53935'),
+  img_cover_logic: cover('?', '#8B5CF6'),
+  img_cover_trig: cover('sin', '#3390EC'),
+  img_cover_log: cover('log', '#F59B23'),
+  img_cover_contest: cover('#1', '#F59B23'),
+  img_cover_live: cover('LIVE', '#E53935'),
+  img_cover_quiz: cover('Q', '#2A9EF1'),
+  img_cover_dtm: cover('DTM', '#3390EC'),
+  img_cover_milliy: cover('MS', '#31B545'),
 };
 
 /** Writes every seed illustration into IndexedDB under its stable id. */

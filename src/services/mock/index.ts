@@ -1,7 +1,7 @@
 import { seedDatabase } from '@/mocks/seed';
 import { clearImages } from '@/lib/imageStore';
 import type { AdminApi, Api } from '../api';
-import { clearDatabase, db, hasData, simulate } from './db';
+import { clearDatabase, db, hasData, loadDatabase, simulate } from './db';
 import { mockTestsApi, withStatus } from './tests';
 import { mockAttemptsApi } from './attempts';
 import { mockUsersApi } from './users';
@@ -19,6 +19,7 @@ const mockAdminApi: AdminApi = {
 
 /** Seeds the mock database on first run. Safe to call repeatedly. */
 export async function ensureSeeded(): Promise<void> {
+  await loadDatabase();
   if (hasData()) return;
   await seedDatabase();
 }
