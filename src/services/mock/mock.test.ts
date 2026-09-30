@@ -22,7 +22,7 @@ describe('seed data', () => {
     const tests = await mockApi.tests.list();
     const users = await mockApi.users.list();
     expect(tests.length).toBeGreaterThanOrEqual(8);
-    expect(users.filter((user) => user.role === 'teacher')).toHaveLength(2);
+    expect(users.filter((user) => user.role === 'teacher').length).toBeGreaterThanOrEqual(2);
     expect(users.some((user) => user.role === 'admin')).toBe(true);
   });
 
@@ -47,7 +47,8 @@ describe('seed data', () => {
 
   it('opens with a live room that is already gathering players', async () => {
     const open = await mockApi.live.listOpen();
-    expect(open).toHaveLength(1);
+    expect(open.length).toBeGreaterThanOrEqual(1);
+    expect(open.every((room) => room.status === 'lobby')).toBe(true);
     expect(open[0]?.status).toBe('lobby');
     expect(open[0]?.participants.length).toBeGreaterThan(0);
 

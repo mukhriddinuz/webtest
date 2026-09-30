@@ -143,3 +143,49 @@ export function generateAttempts(input: {
 
   return { attempts, participantIds: chosen.map((user) => user.id) };
 }
+
+/**
+ * A paper someone has started and not handed in: the first `share` of the
+ * questions answered, the clock still running.
+ */
+export function inProgressAttempt(input: {
+  test: Test;
+  questions: Question[];
+  user: User;
+  now: number;
+  /** Fraction of the paper already answered, 0..1. */
+  share: number;
+  /** Minutes ago the attempt began. */
+  startedMinutesAgo: number;
+}): Attempt {
+  const { test, questions, user, now } = input;
+  const rnd = createRandom(hashSeed(`${test.id}:${user.id}:running`));
+  const answers: Record<string, GivenAnswer> = {};
+  const answered = Math.floor(questions.length * input.share);
+  for (const question of questions.slice(0, answered)) {
+    const answer = answerFor(question, 0.7, rnd);
+    if (answer) answers[question.id] = answer;
+  }
+
+  const startedAt = now - input.startedMinutesAgo * 60_000;
+  const duration = test.settings.durationMin;
+  return {
+    id: uid('att'),
+    testId: test.id,
+    userId: user.id,
+    status: 'in_progress',
+    startedAt: new Date(startedAt).toISOString(),
+    deadlineAt: duration ? new Date(startedAt + duration * 60_000).toISOString() : undefined,
+    answers,
+    flagged: questions
+      .slice(0, answered)
+      .filter((_, index) => index % 7 === 3)
+      .map((question) => question.id),
+    questionOrder: questions.map((question) => question.id),
+    score: 0,
+    maxScore: questions.reduce((sum, question) => sum + question.points, 0),
+    percent: 0,
+    results: [],
+    tabSwitches: 0,
+  };
+}

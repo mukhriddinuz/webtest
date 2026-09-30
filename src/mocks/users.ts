@@ -51,6 +51,28 @@ export const SEED_USERS: User[] = [
   },
 ];
 
+const teacher = (n: number, firstName: string, lastName: string, username: string): User => ({
+  id: `u_teacher_${n}`,
+  telegramId: 100000000 + 10 + n,
+  firstName,
+  lastName,
+  username,
+  role: 'teacher',
+  languageCode: 'uz',
+  isBlocked: false,
+  createdAt: new Date(Date.UTC(2024, 8, 1 + n * 3, 8)).toISOString(),
+});
+
+/** More teachers, so the catalogue has authors other than the demo account. */
+export const EXTRA_TEACHERS: User[] = [
+  teacher(3, 'Bobur', 'Ismoilov', 'bobur_kimyo'),
+  teacher(4, 'Malika', 'Sodiqova', 'malika_english'),
+  teacher(5, 'Sherzod', 'Nurmatov', 'sherzod_it'),
+  teacher(6, 'Gulchehra', 'Hamidova', 'gulchehra_adabiyot'),
+  teacher(7, 'Farhod', 'Yo‘ldoshev', 'farhod_tarix'),
+  teacher(8, 'Zarina', 'Ahmedova', 'zarina_bio'),
+];
+
 export const DEFAULT_DEV_USER = SEED_USERS[0] as User;
 
 export function fullName(user: Pick<User, 'firstName' | 'lastName'>): string {

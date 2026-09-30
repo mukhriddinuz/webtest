@@ -1,15 +1,23 @@
-import { readJson, removeRaw, writeJson } from '@/lib/storage';
+import { del, get, set } from 'idb-keyval';
+import { removeRaw } from '@/lib/storage';
 import { devSettings } from '@/store/dev';
 import { ApiError } from '../api';
 import type { Attempt, LiveSession, Question, Test, TestRegistration, User } from '../types';
 
-export const DB_KEY = 'testhub.db.v1';
+/** Where the database lived while it still fitted in localStorage. */
+export const LEGACY_DB_KEY = 'testhub.db.v1';
+/**
+ * The database lives in IndexedDB: a fully populated demo runs to several
+ * megabytes, past what localStorage will hold. It is read once at start-up
+ * into memory, so every call after that stays synchronous.
+ */
+export const DB_KEY = 'testhub:db';
 /**
  * Bumped whenever the seed material changes shape or content: a device holding
  * an older database discards it and seeds again, which is also what refreshes
  * the stored artwork.
  */
-export const DB_VERSION = 4;
+export const DB_VERSION = 5;
 
 export interface MockDatabase {
   version: number;
@@ -33,30 +41,76 @@ export const emptyDatabase = (): MockDatabase => ({
 
 let cache: MockDatabase | null = null;
 
-export function db(): MockDatabase {
-  if (!cache) {
-    const stored = readJson<MockDatabase | null>(DB_KEY, null);
-    cache = stored && stored.version === DB_VERSION ? stored : emptyDatabase();
+const SAVE_DELAY_MS = 400;
+let saveTimer: number | undefined;
+
+const hasIndexedDb = () => typeof indexedDB !== 'undefined';
+
+/** Writes the in-memory database out now. Failures only cost persistence. */
+export async function flushDatabase(): Promise<void> {
+  if (saveTimer !== undefined) {
+    window.clearTimeout(saveTimer);
+    saveTimer = undefined;
   }
+  if (!cache || !hasIndexedDb()) return;
+  try {
+    await set(DB_KEY, cache);
+  } catch {
+    // A full or blocked store leaves the session working, just not remembered.
+  }
+}
+
+/** Saves shortly after the last change, so a burst of writes is one write. */
+function scheduleSave(): void {
+  if (!hasIndexedDb()) return;
+  if (saveTimer !== undefined) window.clearTimeout(saveTimer);
+  saveTimer = window.setTimeout(() => void flushDatabase(), SAVE_DELAY_MS);
+}
+
+if (typeof document !== 'undefined') {
+  // A WebView can be killed the moment it is hidden; save before that.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') void flushDatabase();
+  });
+  window.addEventListener('pagehide', () => void flushDatabase());
+}
+
+/** Loads the stored database into memory. Call once before the first `db()`. */
+export async function loadDatabase(): Promise<void> {
+  removeRaw(LEGACY_DB_KEY);
+  if (!hasIndexedDb()) return;
+  try {
+    const stored = await get<MockDatabase>(DB_KEY);
+    if (stored && stored.version === DB_VERSION) cache = stored;
+  } catch {
+    // Unreadable storage: start from a fresh seed.
+  }
+}
+
+export function db(): MockDatabase {
+  if (!cache) cache = emptyDatabase();
   return cache;
 }
 
 export function setDatabase(next: MockDatabase): void {
   cache = next;
-  writeJson(DB_KEY, next);
+  scheduleSave();
 }
 
 /** Mutates the database and persists it in one step. */
 export function mutate<T>(recipe: (draft: MockDatabase) => T): T {
-  const current = db();
-  const result = recipe(current);
-  writeJson(DB_KEY, current);
+  const result = recipe(db());
+  scheduleSave();
   return result;
 }
 
 export function clearDatabase(): void {
   cache = null;
-  removeRaw(DB_KEY);
+  if (saveTimer !== undefined) {
+    window.clearTimeout(saveTimer);
+    saveTimer = undefined;
+  }
+  if (hasIndexedDb()) void del(DB_KEY).catch(() => undefined);
 }
 
 export function hasData(): boolean {
