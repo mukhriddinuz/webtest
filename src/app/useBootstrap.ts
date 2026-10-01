@@ -34,8 +34,10 @@ export function useBootstrap(): { state: BootstrapState; retry: () => void } {
             username: telegramUser.username,
             photoUrl: telegramUser.photoUrl,
           });
+          // The dev panel's pick wins, so accounts can be switched inside Telegram too.
+          const chosen = devUserId ? await api.users.get(devUserId).catch(() => null) : null;
           if (!active) return;
-          setUser(user);
+          setUser(chosen ?? user);
         } else {
           // Browser mode: the dev panel picks one of the seeded accounts.
           const users = await api.users.list();

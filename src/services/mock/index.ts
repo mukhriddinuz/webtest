@@ -18,8 +18,13 @@ const mockAdminApi: AdminApi = {
 };
 
 /** Seeds the mock database on first run. Safe to call repeatedly. */
+let loaded: Promise<void> | null = null;
+
 export async function ensureSeeded(): Promise<void> {
-  await loadDatabase();
+  // Read the stored copy once: a later read would swap in a copy that is
+  // behind the changes made since, since saving is debounced.
+  loaded ??= loadDatabase();
+  await loaded;
   if (hasData()) return;
   await seedDatabase();
 }
