@@ -46,6 +46,29 @@ let saveTimer: number | undefined;
 
 const hasIndexedDb = () => typeof indexedDB !== 'undefined';
 
+/** How the last attempt to read or write the stored database went. */
+export type StorageState = 'unavailable' | 'ok' | 'failed' | 'timeout';
+let storageState: StorageState = hasIndexedDb() ? 'ok' : 'unavailable';
+export const getStorageState = (): StorageState => storageState;
+
+const LOAD_TIMEOUT_MS = 4000;
+
+/** A webview whose storage never answers must not keep the app on its splash. */
+const withTimeout = <T>(work: Promise<T>): Promise<T> =>
+  new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error('timeout')), LOAD_TIMEOUT_MS);
+    work.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (error: unknown) => {
+        window.clearTimeout(timer);
+        reject(error instanceof Error ? error : new Error(String(error)));
+      },
+    );
+  });
+
 /** Writes the in-memory database out now. Failures only cost persistence. */
 export async function flushDatabase(): Promise<void> {
   if (saveTimer !== undefined) {
@@ -55,8 +78,10 @@ export async function flushDatabase(): Promise<void> {
   if (!cache || !hasIndexedDb()) return;
   try {
     await set(DB_KEY, cache);
+    storageState = 'ok';
   } catch {
     // A full or blocked store leaves the session working, just not remembered.
+    storageState = 'failed';
   }
 }
 
@@ -80,10 +105,11 @@ export async function loadDatabase(): Promise<void> {
   removeRaw(LEGACY_DB_KEY);
   if (!hasIndexedDb()) return;
   try {
-    const stored = await get<MockDatabase>(DB_KEY);
+    const stored = await withTimeout(get<MockDatabase>(DB_KEY));
     if (stored && stored.version === DB_VERSION) cache = stored;
-  } catch {
+  } catch (error) {
     // Unreadable storage: start from a fresh seed.
+    storageState = error instanceof Error && error.message === 'timeout' ? 'timeout' : 'failed';
   }
 }
 

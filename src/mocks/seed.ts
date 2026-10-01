@@ -252,6 +252,10 @@ export function buildSeedDatabase(now = Date.now()): MockDatabase {
 export async function seedDatabase(now = Date.now()): Promise<MockDatabase> {
   const database = buildSeedDatabase(now);
   setDatabase(database);
-  await seedImages();
+  try {
+    await seedImages();
+  } catch {
+    // Artwork is decoration: covers fall back to their placeholder without it.
+  }
   return database;
 }

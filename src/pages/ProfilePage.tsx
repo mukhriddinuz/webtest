@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { isMockMode } from '@/services';
+import { db, getStorageState } from '@/services/mock/db';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -147,9 +149,11 @@ function BuildStamp() {
   const stamp = Number.isNaN(built.getTime())
     ? ''
     : built.toISOString().slice(0, 16).replace('T', ' ');
+  const data = isMockMode ? ` · ${db().tests.length} test · ${getStorageState()}` : '';
   return (
     <p className="mt-6 text-center text-small text-text-muted">
       TestHub · {__BUILD_ID__} · {stamp}
+      {data}
     </p>
   );
 }
