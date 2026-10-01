@@ -9,6 +9,10 @@ import { db, mutate, requireUser, simulate } from './db';
  * therefore meet an empty app, so the first Telegram account to open it takes
  * that teacher's place — its tests, attempts and statistics included. Each
  * device seeds its own database, so every visitor gets this on their first run.
+ *
+ * Any further account opened on the same device is shown the same demo
+ * account rather than an empty one, so the full demo is visible from every
+ * login. The backend replaces this with real per-account data.
  */
 const DEMO_TEACHER = { id: 'u_teacher_1', telegramId: 100000001 };
 
@@ -35,6 +39,10 @@ export const mockUsersApi: UsersApi = {
           demo.photoUrl = telegramUser.photoUrl;
           return demo;
         }
+
+        // The demo is already claimed: show it to this account too, rather
+        // than an empty app.
+        if (demo) return demo;
 
         const created: User = {
           id: uid('user'),

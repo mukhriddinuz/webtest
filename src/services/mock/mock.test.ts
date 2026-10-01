@@ -262,12 +262,13 @@ describe('resolving a Telegram account', () => {
     expect(again.firstName).toBe('Muhriddin');
   });
 
-  it('creates a fresh account once the demo teacher is taken', async () => {
-    await mockApi.users.resolve(visitor);
+  it('shows a second account the same full demo instead of an empty app', async () => {
+    const first = await mockApi.users.resolve(visitor);
     const other = await mockApi.users.resolve({ id: 777000222, firstName: 'Sitora' });
 
-    expect(other.id).not.toBe('u_teacher_1');
-    expect((await mockApi.users.stats(other.id)).created).toBe(0);
+    expect(other.id).toBe(first.id);
+    expect(other.firstName).toBe('Muxriddin');
+    expect((await mockApi.users.stats(other.id)).created).toBeGreaterThan(0);
   });
 });
 
