@@ -225,3 +225,16 @@ npm test
 - `services/mock/mock.test.ts` — seed ma'lumotlar, test yaratish/nashr qilish,
   ishlash va baholash, urinishlar limiti, joylar limiti, musobaqa oynasi;
 - `app/App.test.tsx` — ilovaning haqiqiy render bo'lishi (smoke test).
+
+## Android APK
+
+The app is wrapped for Android with Capacitor (`android/`, `capacitor.config.ts`). It runs on the
+mock data layer, the same as in a browser.
+
+- Build in CI: GitHub → Actions → **Android APK** → *Run workflow*. The installable `TestHub.apk`
+  appears under the run's artifacts and on the `apk-latest` release.
+- Build locally (needs JDK 21 and the Android SDK): `npm run build && npx cap sync android &&
+  cd android && ./gradlew assembleDebug`. The file is `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+The APK is debug-signed, so Android asks to allow installs from unknown sources. A Play Store
+release needs a release keystore.

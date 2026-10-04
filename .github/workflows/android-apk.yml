@@ -1,0 +1,62 @@
+name: Android APK
+
+# Builds an installable APK of the app. Run it from the Actions tab
+# ("Run workflow"); the file lands in the run's artifacts and on the
+# "apk-latest" release.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+
+      - name: Build the web app
+        run: npm run build
+        env:
+          # Shown in Profile, so an installed APK can be matched to a commit.
+          VERCEL_GIT_COMMIT_SHA: ${{ github.sha }}
+
+      - name: Copy it into the Android project
+        run: npx cap sync android
+
+      - name: Build the APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Name the file
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk TestHub.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TestHub-apk
+          path: TestHub.apk
+
+      - name: Publish on the apk-latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete apk-latest --cleanup-tag --yes || true
+          gh release create apk-latest TestHub.apk \
+            --prerelease \
+            --title "TestHub APK (${GITHUB_SHA::7})" \
+            --notes "Debug-signed build of ${GITHUB_SHA::7}. Allow installs from unknown sources to install it."
