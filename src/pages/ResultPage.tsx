@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Check, Clock, Medal, Share2, Trophy, X } from 'lucide-react';
+import { Award, Check, Clock, Medal, Share2, Trophy, X } from 'lucide-react';
 import { getTelegram } from '@/lib/telegram';
 import { formatDuration } from '@/lib/format';
+import { isResultHidden } from '@/lib/resultVisibility';
 import { toast } from '@/store/toast';
 import { useAttempt, useAttemptQuestions, useLeaderboard, useTest } from '@/hooks/queries';
 import { usePrimaryAction } from '@/hooks/usePrimaryAction';
@@ -11,6 +12,7 @@ import { Button } from '@/components/Button';
 import { Card, CardTitle } from '@/components/Card';
 import { CircularProgress } from '@/components/CircularProgress';
 import { ContentBlocks } from '@/components/ContentBlocks';
+import { ListRow, ListSection } from '@/components/ListSection';
 import { ErrorState, LoadingState } from '@/components/StateViews';
 import { QuestionView } from '@/components/QuestionView';
 import { ExamScorePanel } from '@/features/exams/ExamScorePanel';
@@ -65,9 +67,7 @@ export default function ResultPage() {
     );
   }
 
-  const hideResult =
-    test.settings.showResult === 'never' ||
-    (test.settings.showResult === 'after_finish' && test.status === 'active');
+  const hideResult = isResultHidden(test);
 
   const timeSec = attempt.finishedAt
     ? Math.round(
@@ -101,6 +101,15 @@ export default function ResultPage() {
         <Card className="text-center">
           <p className="text-body text-text-muted">{t('result.resultHidden')}</p>
         </Card>
+        <ListSection className="mt-4">
+          <ListRow
+            icon={<Award size={18} strokeWidth={1.75} />}
+            iconClassName="text-accent"
+            title={t('certificate.open')}
+            subtitle={t('certificate.openHint')}
+            onClick={() => navigate(`/t/${test.id}/certificate/${attempt.id}`)}
+          />
+        </ListSection>
       </Page>
     );
   }
@@ -157,6 +166,16 @@ export default function ResultPage() {
           {t('result.wrong')}: <span className="tnum font-medium">{wrongCount}</span>
         </span>
       </div>
+
+      <ListSection className="mt-4">
+        <ListRow
+          icon={<Award size={18} strokeWidth={1.75} />}
+          iconClassName="text-accent"
+          title={t('certificate.open')}
+          subtitle={t('certificate.openHint')}
+          onClick={() => navigate(`/t/${test.id}/certificate/${attempt.id}`)}
+        />
+      </ListSection>
 
       <Button
         className="mt-4"

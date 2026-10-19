@@ -12,6 +12,7 @@ const TestEditorPage = lazy(() => import('@/pages/TestEditorPage'));
 const TestIntroPage = lazy(() => import('@/pages/TestIntroPage'));
 const AttemptPage = lazy(() => import('@/pages/AttemptPage'));
 const ResultPage = lazy(() => import('@/pages/ResultPage'));
+const CertificatePage = lazy(() => import('@/pages/CertificatePage'));
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'));
 const ManageTestPage = lazy(() => import('@/pages/ManageTestPage'));
 const LiveHostPage = lazy(() => import('@/pages/LiveHostPage'));
@@ -56,6 +57,7 @@ const routes: RouteObject[] = [
             handle: hideNav,
           },
           { path: '/t/:testId/result/:attemptId', element: <ResultPage /> },
+          { path: '/t/:testId/certificate/:attemptId', element: <CertificatePage /> },
           { path: '/t/:testId/leaderboard', element: <LeaderboardPage /> },
 
           { path: '/live/:sessionId/host', element: <LiveHostPage />, handle: hideNav },

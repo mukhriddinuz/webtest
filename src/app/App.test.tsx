@@ -115,3 +115,26 @@ describe('App', () => {
     );
   });
 });
+
+describe('certificate', () => {
+  it('opens from a finished paper and names its owner and test', { timeout: 30000 }, async () => {
+    const { ensureSeeded } = await import('@/services/mock');
+    const { db } = await import('@/services/mock/db');
+    await ensureSeeded();
+
+    const attempt = db().attempts.find(
+      (item) =>
+        item.userId === 'u_teacher_1' && item.testId === 't_english' && item.status === 'submitted',
+    );
+    expect(attempt).toBeDefined();
+    window.history.pushState({}, '', `/t/t_english/certificate/${attempt?.id}`);
+
+    const { App } = await import('./App');
+    render(<App />);
+
+    const image = await screen.findByRole('img', { name: /Sertifikat/ }, { timeout: 15000 });
+    expect(image.getAttribute('alt')).toContain('Aziz Rahimov');
+    expect(image.getAttribute('alt')).toContain('Ingliz tili: Present Perfect');
+    expect(screen.getByText('Ulashish')).toBeDefined();
+  });
+});

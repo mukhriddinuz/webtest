@@ -63,6 +63,11 @@ export function formatDate(iso: string, locale: string): string {
 }
 
 /** Initials for avatar fallbacks. */
+/** First and last name, whichever of them the account has. */
+export function fullName(user: { firstName: string; lastName?: string }): string {
+  return [user.firstName, user.lastName].filter(Boolean).join(' ');
+}
+
 export function initials(name: string): string {
   return name
     .split(/\s+/)
