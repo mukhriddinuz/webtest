@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { buildCertificate, certificateNumber, resultPercent, tierFor } from './certificate';
-import { certificateSvg, escapeXml, nameSize, wrapText, type CertificateText } from './render';
+import { backdrop, divider, frame, logoMark, qrPath, qrScale, ribbon, seal } from './ornaments';
+import { THEMES } from './palette';
+import {
+  certificateSvg,
+  escapeXml,
+  nameSize,
+  qrMatrix,
+  signatureSize,
+  wrapText,
+  type CertificateText,
+} from './render';
 
 describe('tierFor', () => {
   it('follows the same bands as the praise on the result screen', () => {
@@ -97,20 +107,31 @@ describe('wrapText', () => {
 
 describe('certificateSvg', () => {
   const content: CertificateText = {
-    brand: 'TestHub',
+    brand: 'TESTHUB',
     title: 'SERTIFIKAT',
     certifies: 'Ushbu sertifikat',
     recipient: 'Jasur Toshmatov',
     body: '«Algebra» testini yakunlagani uchun beriladi.',
     tier: 'good',
     tierLabel: 'Yaxshi natija',
-    detail: '82% · 41 / 50 ball',
-    dateLabel: 'Berilgan sana',
+    stats: [
+      { value: '82%', label: 'NATIJA' },
+      { value: '41 / 50', label: 'BALL' },
+      { value: '04:49', label: 'VAQT' },
+    ],
+    dateLabel: 'BERILGAN SANA',
     dateValue: '19-oktabr, 2026',
-    authorLabel: 'Muallif',
+    authorLabel: 'MUALLIF',
     authorValue: 'Aziz Rahimov',
-    numberLabel: 'Sertifikat raqami',
+    numberLabel: 'SERTIFIKAT RAQAMI',
     numberValue: 'TH-ABCD1234',
+    qr: { size: 2, dark: [true, true, false, true] },
+    qrCaption: 'Testni ochish uchun skanerlang',
+  };
+
+  const wellFormed = (svg: string) => {
+    const document = new DOMParser().parseFromString(svg, 'image/svg+xml');
+    return document.getElementsByTagName('parsererror').length === 0;
   };
 
   it('carries the wording it was given', () => {
@@ -122,27 +143,96 @@ describe('certificateSvg', () => {
     expect(svg).not.toContain('undefined');
   });
 
-  it('cannot be broken by markup in a name or a title', () => {
+  it('is well-formed in every tier, with and without figures and code', () => {
+    for (const tier of ['excellent', 'good', 'fair', 'participation'] as const) {
+      for (const stats of [content.stats, content.stats.slice(0, 1), []]) {
+        for (const qr of [content.qr, null]) {
+          const svg = certificateSvg({ ...content, tier, stats, qr });
+          expect(wellFormed(svg), `${tier} ${stats.length} ${qr ? 'qr' : 'no qr'}`).toBe(true);
+          expect(svg).not.toContain('NaN');
+        }
+      }
+    }
+  });
+
+  it('cannot be broken by markup in a name, a title or an author', () => {
     const svg = certificateSvg({
       ...content,
       recipient: '<script>alert(1)</script> & "Co"',
       body: '«</text><circle/>» testi',
+      authorValue: '<b>x</b>',
     });
+    expect(wellFormed(svg)).toBe(true);
     expect(svg).not.toContain('<script>');
     expect(svg).not.toContain('</text><circle/>');
+    expect(svg).not.toContain('<b>x</b>');
     expect(svg).toContain('&lt;script&gt;');
   });
 
-  it('draws without a detail line when the result is hidden', () => {
-    const svg = certificateSvg({ ...content, detail: null });
+  it('leaves out the figures when the result is hidden', () => {
+    const svg = certificateSvg({ ...content, stats: [] });
     expect(svg).not.toContain('41 / 50');
+    expect(svg).not.toContain('82%');
     expect(svg).toContain('Yaxshi natija');
   });
 
-  it('shrinks long names', () => {
+  it('leaves out the code when it could not be made', () => {
+    expect(certificateSvg({ ...content, qr: null })).not.toContain('Testni ochish');
+  });
+
+  it('shrinks long names and signatures', () => {
     expect(nameSize('Ali Vali')).toBeGreaterThan(
       nameSize('Muhammadjonov Abdurahmonjon Ibrohimovich'),
     );
+    expect(signatureSize('Aziz')).toBeGreaterThan(signatureSize('Muhammadjonov Abdurahmonjon'));
+  });
+});
+
+describe('qr', () => {
+  it('draws runs of dark modules as rectangles', () => {
+    expect(qrPath({ size: 2, dark: [true, true, false, true] })).toBe('M0 0h2v1h-2zM1 1h1v1h-1z');
+    expect(qrPath({ size: 2, dark: [false, false, false, false] })).toBe('');
+  });
+
+  it('picks a whole number of pixels per module', () => {
+    expect(qrScale({ size: 29, dark: [] }, 84)).toBe(2);
+    expect(qrScale({ size: 21, dark: [] }, 84)).toBe(4);
+    expect(qrScale({ size: 200, dark: [] }, 84)).toBe(2);
+  });
+
+  it('makes a square matrix for an address', async () => {
+    const matrix = await qrMatrix('https://example.com/t/t_algebra');
+    expect(matrix).not.toBeNull();
+    expect(matrix!.size).toBeGreaterThanOrEqual(21);
+    expect(matrix!.dark).toHaveLength(matrix!.size ** 2);
+    expect(matrix!.dark.some(Boolean)).toBe(true);
+  });
+});
+
+describe('ornaments', () => {
+  it('draws the divider line in a plain colour', () => {
+    // A gradient on a perfectly horizontal line has no height to spread over,
+    // and SVG then draws nothing at all.
+    const line = divider(707, 298, 150, THEMES.good).match(/<path d="M[^"]*H[^"]*"[^>]*>/)?.[0];
+    expect(line).toBeDefined();
+    expect(line).not.toContain('url(#');
+  });
+
+  it('produce clean coordinates for every theme', () => {
+    for (const theme of Object.values(THEMES)) {
+      const drawing = [
+        frame(1414, 1000, theme),
+        backdrop(1414, 1000, theme),
+        divider(707, 292, 150, theme),
+        ribbon(707, 584, 520, theme),
+        seal(236, 818, 54, 'star', theme),
+        seal(236, 818, 54, 'check', theme),
+        logoMark(140, 122, 56, theme),
+      ].join('');
+      expect(drawing).not.toContain('NaN');
+      expect(drawing).not.toContain('undefined');
+      expect(drawing).not.toContain('Infinity');
+    }
   });
 });
 

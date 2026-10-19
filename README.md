@@ -231,10 +231,13 @@ npm test
 The app is wrapped for Android with Capacitor (`android/`, `capacitor.config.ts`). It runs on the
 mock data layer, the same as in a browser.
 
-- Build in CI: GitHub → Actions → **Android APK** → *Run workflow*. The installable `TestHub.apk`
+- Build in CI: GitHub → Actions → **Android APK** → _Run workflow_. The installable `TestHub.apk`
   appears under the run's artifacts and on the `apk-latest` release.
 - Build locally (needs JDK 21 and the Android SDK): `npm run build && npx cap sync android &&
-  cd android && ./gradlew assembleDebug`. The file is `android/app/build/outputs/apk/debug/app-debug.apk`.
+cd android && ./gradlew assembleDebug`. The file is `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+`VITE_PUBLIC_URL` (repository variable `PUBLIC_URL` in CI) names the deployed web address; links and
+the QR code on a certificate use it, because the packaged app runs on a local origin.
 
 The APK is debug-signed, so Android asks to allow installs from unknown sources. A Play Store
 release needs a release keystore.

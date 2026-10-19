@@ -3,6 +3,8 @@
 interface ImportMetaEnv {
   readonly VITE_API_MODE?: 'mock' | 'http';
   readonly VITE_API_BASE_URL?: string;
+  /** Where the web app lives; used for links shared out of a packaged build. */
+  readonly VITE_PUBLIC_URL?: string;
 }
 
 interface ImportMeta {

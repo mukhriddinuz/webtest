@@ -13,6 +13,8 @@ export interface CertificateData {
   author: string;
   /** ISO time the paper was handed in. */
   issuedAt: string;
+  /** How long the paper took, when known. */
+  durationSec?: number;
   tier: CertificateTier;
   /** Null when the test keeps its result hidden: the certificate then only attests the attempt. */
   result: CertificateResult | null;
@@ -63,6 +65,7 @@ export function buildCertificate(input: {
   testTitle: string;
   author: string;
   issuedAt: string;
+  durationSec?: number;
   result: CertificateResult | null;
 }): CertificateData {
   return {
@@ -71,6 +74,7 @@ export function buildCertificate(input: {
     testTitle: input.testTitle,
     author: input.author,
     issuedAt: input.issuedAt,
+    durationSec: input.durationSec,
     tier: input.result ? tierFor(resultPercent(input.result)) : 'participation',
     result: input.result,
   };
