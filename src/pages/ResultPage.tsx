@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Award, Check, Clock, Medal, Share2, Trophy, X } from 'lucide-react';
 import { getTelegram } from '@/lib/telegram';
+import { appUrl } from '@/lib/appUrl';
 import { formatDuration } from '@/lib/format';
 import { isResultHidden } from '@/lib/resultVisibility';
 import { toast } from '@/store/toast';
@@ -88,7 +89,7 @@ export default function ResultPage() {
     });
     const telegram = getTelegram();
     if (telegram.switchInlineQuery(message)) return;
-    const url = `${window.location.origin}/t/${test.id}`;
+    const url = appUrl(`/t/${test.id}`);
     void navigator.clipboard?.writeText(`${message} ${url}`).then(() => {
       toast.success(t('common.copied'));
     });

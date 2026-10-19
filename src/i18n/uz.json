@@ -386,9 +386,6 @@
       "fair": "Qoniqarli natija",
       "participation": "Ishtirokchi"
     },
-    "detailPercent": "{{percent}}% · {{score}} / {{max}} ball",
-    "detailExam": "{{score}} / {{max}} ball",
-    "detailExamLevel": "Daraja {{level}} · {{score}} / {{max}} ball",
     "date": "Berilgan sana",
     "author": "Muallif",
     "number": "Sertifikat raqami",
@@ -399,7 +396,13 @@
     "shareText": "«{{title}}» testi yakunlandi, sertifikat olindi!",
     "hint": "Telegram ichida yuklab olish ishlamasa, rasmni bosib turing va saqlang.",
     "preparing": "Sertifikat tayyorlanmoqda…",
-    "failed": "Sertifikatni tayyorlab bo'lmadi"
+    "failed": "Sertifikatni tayyorlab bo'lmadi",
+    "statResult": "Natija",
+    "statScore": "Ball",
+    "statLevel": "Daraja",
+    "statTime": "Vaqt",
+    "qrCaption": "Testni ochish uchun skanerlang",
+    "zoom": "Kattalashtirish"
   },
   "leaderboard": {
     "title": "Reyting",

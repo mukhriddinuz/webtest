@@ -35,6 +35,9 @@ jobs:
         env:
           # Shown in Profile, so an installed APK can be matched to a commit.
           VERCEL_GIT_COMMIT_SHA: ${{ github.sha }}
+          # Links and QR codes shared from the app point here. Set the
+          # repository variable PUBLIC_URL to the deployed web address.
+          VITE_PUBLIC_URL: ${{ vars.PUBLIC_URL }}
 
       - name: Copy it into the Android project
         run: npx cap sync android

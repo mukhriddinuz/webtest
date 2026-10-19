@@ -1,25 +1,30 @@
 import type { TFunction } from 'i18next';
-import { formatDate } from '@/lib/format';
+import { formatDate, formatDuration } from '@/lib/format';
 import type { CertificateData } from './certificate';
-import type { CertificateText } from './render';
+import type { QrMatrix } from './ornaments';
+import type { CertificateStat, CertificateText } from './render';
 
-function detailFor(data: CertificateData, t: TFunction): string | null {
+function statsFor(data: CertificateData, t: TFunction, locale: string): CertificateStat[] {
   const result = data.result;
-  if (!result) return null;
+  // A test that hides its result must not give it away here either.
+  if (!result) return [];
+
+  const upper = (key: string) => t(key).toLocaleUpperCase(locale);
+  const stats: CertificateStat[] = [];
+
   if (result.kind === 'percent') {
-    return t('certificate.detailPercent', {
-      percent: Math.round(result.percent),
-      score: result.score,
-      max: result.maxScore,
-    });
+    stats.push({ value: `${Math.round(result.percent)}%`, label: upper('certificate.statResult') });
+  } else if (result.level) {
+    stats.push({ value: result.level, label: upper('certificate.statLevel') });
   }
-  return result.level
-    ? t('certificate.detailExamLevel', {
-        level: result.level,
-        score: result.score,
-        max: result.maxScore,
-      })
-    : t('certificate.detailExam', { score: result.score, max: result.maxScore });
+  stats.push({
+    value: `${result.score} / ${result.maxScore}`,
+    label: upper('certificate.statScore'),
+  });
+  if (data.durationSec !== undefined) {
+    stats.push({ value: formatDuration(data.durationSec), label: upper('certificate.statTime') });
+  }
+  return stats;
 }
 
 /** The certificate's wording in the reader's language. */
@@ -27,21 +32,25 @@ export function certificateText(
   data: CertificateData,
   t: TFunction,
   locale: string,
+  qr: QrMatrix | null,
 ): CertificateText {
+  const upper = (key: string) => t(key).toLocaleUpperCase(locale);
   return {
-    brand: t('certificate.brand').toLocaleUpperCase(locale),
-    title: t('certificate.title').toLocaleUpperCase(locale),
+    brand: upper('certificate.brand'),
+    title: upper('certificate.title'),
     certifies: t('certificate.certifies'),
     recipient: data.recipient,
     body: t('certificate.body', { test: data.testTitle }),
     tier: data.tier,
     tierLabel: t(`certificate.tier.${data.tier}`),
-    detail: detailFor(data, t),
-    dateLabel: t('certificate.date'),
+    stats: statsFor(data, t, locale),
+    dateLabel: upper('certificate.date'),
     dateValue: formatDate(data.issuedAt, locale),
-    authorLabel: t('certificate.author'),
+    authorLabel: upper('certificate.author'),
     authorValue: data.author,
-    numberLabel: t('certificate.number'),
+    numberLabel: upper('certificate.number'),
     numberValue: data.number,
+    qr,
+    qrCaption: t('certificate.qrCaption'),
   };
 }
