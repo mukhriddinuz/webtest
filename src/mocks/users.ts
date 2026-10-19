@@ -75,6 +75,4 @@ export const EXTRA_TEACHERS: User[] = [
 
 export const DEFAULT_DEV_USER = SEED_USERS[0] as User;
 
-export function fullName(user: Pick<User, 'firstName' | 'lastName'>): string {
-  return [user.firstName, user.lastName].filter(Boolean).join(' ');
-}
+export { fullName } from '@/lib/format';

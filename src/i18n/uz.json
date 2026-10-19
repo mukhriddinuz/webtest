@@ -375,6 +375,32 @@
     "praise40": "Harakat qiling, hammasi oldinda 📚",
     "praise0": "Mavzuni qaytadan ko'rib chiqing 📖"
   },
+  "certificate": {
+    "title": "Sertifikat",
+    "brand": "TestHub",
+    "certifies": "Ushbu sertifikat",
+    "body": "«{{test}}» testini yakunlagani uchun beriladi.",
+    "tier": {
+      "excellent": "A'lo natija",
+      "good": "Yaxshi natija",
+      "fair": "Qoniqarli natija",
+      "participation": "Ishtirokchi"
+    },
+    "detailPercent": "{{percent}}% · {{score}} / {{max}} ball",
+    "detailExam": "{{score}} / {{max}} ball",
+    "detailExamLevel": "Daraja {{level}} · {{score}} / {{max}} ball",
+    "date": "Berilgan sana",
+    "author": "Muallif",
+    "number": "Sertifikat raqami",
+    "open": "Sertifikat",
+    "openHint": "Yuklab olish va ulashish",
+    "download": "Yuklab olish",
+    "share": "Ulashish",
+    "shareText": "«{{title}}» testi yakunlandi, sertifikat olindi!",
+    "hint": "Telegram ichida yuklab olish ishlamasa, rasmni bosib turing va saqlang.",
+    "preparing": "Sertifikat tayyorlanmoqda…",
+    "failed": "Sertifikatni tayyorlab bo'lmadi"
+  },
   "leaderboard": {
     "title": "Reyting",
     "empty": "Hali natijalar yo'q",
